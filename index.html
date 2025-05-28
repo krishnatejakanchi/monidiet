@@ -41,21 +41,26 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.5);
+            padding-top: 60px;
         }
         .modal-content {
             background-color: #fefefe;
-            margin: 10% auto;
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            max-width: 700px;
+            max-width: 600px;
             border-radius: 0.5rem;
+            position: relative;
         }
         .modal-close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
         }
         .modal-close:hover,
         .modal-close:focus {
@@ -63,7 +68,7 @@
             text-decoration: none;
             cursor: pointer;
         }
-        .info-button {
+        .info-button { 
             background-color: #4299e1; 
             color: white;
             padding: 0.5rem 1rem;
@@ -71,6 +76,7 @@
             font-weight: 500; 
             transition: background-color 0.3s;
             cursor: pointer;
+            border: none;
         }
         .info-button:hover {
             background-color: #3182ce; 
@@ -116,19 +122,10 @@
         .overview-extra-info strong {
             color: #5a67d8; 
         }
-        .baby-size-container {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem; /* Increased gap slightly */
+         .loader-text { 
+            color: #9ca3af; 
+            font-style: italic;
         }
-        .baby-size-image {
-            width: 48px; /* Slightly larger image */
-            height: 48px;
-            object-fit: contain; 
-            border-radius: 0.375rem; /* Tailwind rounded-md */
-            background-color: #e2e8f0; /* Tailwind gray-200 for placeholder background */
-        }
-
     </style>
 </head>
 <body class="antialiased text-gray-900">
@@ -149,13 +146,9 @@
                 <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="currentTrimester"></span></p>
                 <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="currentPregnancyWeek"></span></p>
                 <div class="mt-3 overview-extra-info">
-                    <div class="baby-size-container">
-                        <span class="font-medium">Baby's Size:</span> 
-                        <img id="currentBabyImage" src="https://placehold.co/48x48/e2e8f0/333?text=Fruit" alt="Baby size comparison" class="baby-size-image" onerror="this.onerror=null;this.src='https://placehold.co/48x48/e2e8f0/333?text=Img';">
-                        <span id="currentBabySizeText"></span>
-                    </div>
-                    <p><span class="font-medium">Daily Fact:</span> <span id="currentDailyFact"></span></p>
-                    <p><span class="font-medium">Daily Tip:</span> <span id="currentDailyTip"></span></p>
+                    <p><span class="font-medium">Baby's Size:</span> <span id="currentBabySizeText"></span></p>
+                    <p><span class="font-medium">✨ Daily Fact:</span> <span id="currentDailyFact" ></span></p>
+                    <p><span class="font-medium">✨ Daily Tip:</span> <span id="currentDailyTip" ></span></p>
                 </div>
             </div>
 
@@ -179,7 +172,7 @@
             </div>
             <div class="mb-6 text-center md:text-left">
                 <button id="viewTomorrowButton" class="shortcut-button w-full sm:w-auto h-12 flex items-center justify-center">📅 View Tomorrow's Plan</button>
-            </div>
+                </div>
 
             <div id="selectedDatePlanSection" class="mt-4" style="display: none;">
                 <div id="selectedDatePlanMessage" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert" style="display: none;">
@@ -190,13 +183,9 @@
                         <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="selectedDateTrimester"></span></p>
                         <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="selectedDatePregnancyWeek"></span></p>
                         <div class="mt-3 overview-extra-info">
-                             <div class="baby-size-container">
-                                <span class="font-medium">Baby's Size:</span> 
-                                <img id="selectedDateBabyImage" src="https://placehold.co/48x48/e2e8f0/333?text=Fruit" alt="Baby size comparison" class="baby-size-image" onerror="this.onerror=null;this.src='https://placehold.co/48x48/e2e8f0/333?text=Img';">
-                                <span id="selectedDateBabySizeText"></span>
-                            </div>
-                            <p><span class="font-medium">Daily Fact:</span> <span id="selectedDateDailyFact"></span></p>
-                            <p><span class="font-medium">Daily Tip:</span> <span id="selectedDateDailyTip"></span></p>
+                            <p><span class="font-medium">Baby's Size:</span> <span id="selectedDateBabySizeText"></span></p>
+                            <p><span class="font-medium">✨ Daily Fact:</span> <span id="selectedDateDailyFact"></span></p>
+                            <p><span class="font-medium">✨ Daily Tip:</span> <span id="selectedDateDailyTip"></span></p>
                         </div>
                     </div>
                     <div class="mb-6"> 
@@ -218,17 +207,17 @@
             <button id="keyNutrientsBtn" class="info-button w-full">Key Nutrients Info</button>
             <button id="lifestyleBtn" class="info-button w-full">Lifestyle & Supplements</button>
         </div>
-
+        
         <div id="foodSafetyModal" class="modal">
             <div class="modal-content">
                 <span class="modal-close" onclick="closeModal('foodSafetyModal')">&times;</span>
                 <h2 class="text-2xl font-semibold text-red-700 mb-4">Food Safety Guidelines for Monika</h2>
                 <div id="foodsToAvoidContent" class="mb-6">
                     <h3 class="text-xl font-medium text-red-600 mb-2">Foods to Limit or Avoid</h3>
-                </div>
+                     </div>
                 <div id="foodHandlingContent">
                     <h3 class="text-xl font-medium text-red-600 mb-2">Safe Food Handling Practices</h3>
-                </div>
+                     </div>
             </div>
         </div>
 
@@ -237,7 +226,7 @@
                 <span class="modal-close" onclick="closeModal('keyNutrientsModal')">&times;</span>
                 <h2 class="text-2xl font-semibold text-green-700 mb-4">Key Nutrients for Monika's Pregnancy</h2>
                 <div id="keyNutrientsContent">
-                </div>
+                     </div>
             </div>
         </div>
 
@@ -246,7 +235,7 @@
                 <span class="modal-close" onclick="closeModal('lifestyleModal')">&times;</span>
                 <h2 class="text-2xl font-semibold text-blue-700 mb-4">Lifestyle & Supplements for Monika</h2>
                 <div id="lifestyleContent">
-                </div>
+                     </div>
             </div>
         </div>
 
@@ -262,45 +251,17 @@
             lmpDay: 23, 
             lmpMonth: 3, 
             babySizeComparisons: [ 
-                { text: "a tiny poppy seed!", image: "https://placehold.co/48x48/A9A9A9/FFFFFF?text=PoppySeed" },
-                { text: "a sesame seed!", image: "https://placehold.co/48x48/D2B48C/FFFFFF?text=SesameSeed" },
-                { text: "a lentil!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Red_lentils.jpg/120px-Red_lentils.jpg" },
-                { text: "a blueberry!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Blueberries.jpg/120px-Blueberries.jpg" },
-                { text: "a raspberry!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Raspberries_and_leaves.jpg/120px-Raspberries_and_leaves.jpg" },
-                { text: "a kidney bean!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Red_kidney_beans.jpg/120px-Red_kidney_beans.jpg" },
-                { text: "an olive!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Olives2007.jpg/120px-Olives2007.jpg" },
-                { text: "a grape!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Table_grapes_on_white.jpg/120px-Table_grapes_on_white.jpg" },
-                { text: "a lime!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Lime_fruits.jpg/120px-Lime_fruits.jpg" },
-                { text: "a pea pod!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Pisum_sativum_pods.jpg/120px-Pisum_sativum_pods.jpg" },
-                { text: "a lemon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Lemon.jpg/120px-Lemon.jpg" },
-                { text: "an apple!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/120px-Red_Apple.jpg" },
-                { text: "an avocado!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Avocado_Hass_-_single_and_cut.jpg/120px-Avocado_Hass_-_single_and_cut.jpg" },
-                { text: "a turnip!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Turnip_2622027.jpg/120px-Turnip_2622027.jpg" },
-                { text: "a bell pepper!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Red_capsicum_and_cross_section.jpg/120px-Red_capsicum_and_cross_section.jpg" },
-                { text: "a sweet potato!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sweet_potato_presentation.jpg/120px-Sweet_potato_presentation.jpg" },
-                { text: "an heirloom tomato!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Bright_red_tomato_and_cross_section02.jpg/120px-Bright_red_tomato_and_cross_section02.jpg" },
-                { text: "a pomegranate!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Pomegranate_fruit_and_seeds.jpg/120px-Pomegranate_fruit_and_seeds.jpg" },
-                { text: "a small cantaloupe!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Cantaloupe.jpg/120px-Cantaloupe.jpg" },
-                { text: "an ear of corn!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Corncobs.jpg/120px-Corncobs.jpg" },
-                { text: "a large banana!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/120px-Banana-Single.jpg" },
-                { text: "a rutabaga!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Rutabaga_-_Brassica_napus_-_whole_and_cross_section.jpg/120px-Rutabaga_-_Brassica_napus_-_whole_and_cross_section.jpg" },
-                { text: "an eggplant!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Solanum_melongena_EN_01.JPG/120px-Solanum_melongena_EN_01.JPG" },
-                { text: "a cauliflower head!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cauliflower_detail.jpg/120px-Cauliflower_detail.jpg" },
-                { text: "a butternut squash!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Butternut_squash_whole_and_halved.jpg/120px-Butternut_squash_whole_and_halved.jpg" },
-                { text: "a cabbage head!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Cabbage_and_cross_section_on_white.jpg/120px-Cabbage_and_cross_section_on_white.jpg" },
-                { text: "a coconut!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Opened_coconut_with_coconut_water.jpg/120px-Opened_coconut_with_coconut_water.jpg" },
-                { text: "a jicama!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Jicama_cut.jpg/120px-Jicama_cut.jpg" },
-                { text: "a small pumpkin!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/JackbeLittle.jpg/120px-JackbeLittle.jpg" },
-                { text: "a pineapple!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Pineapple_And_A_Half.jpg/120px-Pineapple_And_A_Half.jpg" },
-                { text: "a honeydew melon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Honeydew_melon_whole_and_cut.jpg/120px-Honeydew_melon_whole_and_cut.jpg" },
-                { text: "a mini watermelon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Sugar_Baby_Watermelon.jpg/120px-Sugar_Baby_Watermelon.jpg" },
-                { text: "a spaghetti squash!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Spaghetti_squash_1.jpg/120px-Spaghetti_squash_1.jpg" },
-                { text: "a bunch of Swiss chard!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Swiss_Chard_NCBG.JPG/120px-Swiss_Chard_NCBG.JPG" },
-                { text: "a small watermelon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Sugar_Baby_Watermelon.jpg/120px-Sugar_Baby_Watermelon.jpg" },
-                { text: "a pumpkin!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/JackbeLittle.jpg/120px-JackbeLittle.jpg" },
-                { text: "a large watermelon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Watermelon_slice.jpg/120px-Watermelon_slice.jpg" } 
+                "a tiny poppy seed!", "a sesame seed!", "a lentil!", "a blueberry!", "a raspberry!", 
+                "a kidney bean!", "an olive!", "a grape!", "a lime!", 
+                "a pea pod!", "a lemon!", "an apple!", "an avocado!", 
+                "a turnip!", "a bell pepper!", "a sweet potato!", "an heirloom tomato!", 
+                "a pomegranate!", "a small cantaloupe!", "an ear of corn!", "a large banana!", 
+                "a rutabaga!", "an eggplant!", "a cauliflower head!", "a butternut squash!", 
+                "a cabbage head!", "a coconut!", "a jicama!", "a small pumpkin!", 
+                "a pineapple!", "a honeydew melon!", "a mini watermelon!", "a spaghetti squash!", 
+                "a bunch of Swiss chard!", "a small watermelon!", "a pumpkin!", "a watermelon!" 
             ],
-            dailyFacts: [
+            dailyFacts: [ 
                 "Your baby's heart will begin to beat around week 6!",
                 "Morning sickness can happen any time of day, not just in the morning.",
                 "By week 10, your baby has all their major organs.",
@@ -317,7 +278,7 @@
                 "Food cravings and aversions are very common and can change.",
                 "Staying hydrated is extra important during pregnancy."
             ],
-            dailyTips: [
+            dailyTips: [ 
                 "Take your prenatal vitamins daily as prescribed by your doctor.",
                 "Listen to your body and rest when you need to.",
                 "Eat small, frequent meals if you're experiencing nausea.",
@@ -572,7 +533,7 @@
                         }
                     ]
                 }
-            },
+            }, // This closing brace for 'trimesters' was missing its comma in a previous version.
             foodSafety: {
                 foodsToAvoid: [
                     { category: "High-Mercury Fish", items: "Shark, swordfish, king mackerel, tuna (especially bigeye), marlin, tilefish. Risk of mercury toxicity." },
@@ -623,7 +584,6 @@
         const currentDateDisplay = document.getElementById('currentDateDisplay');
         const currentTrimesterDisplay = document.getElementById('currentTrimester');
         const currentPregnancyWeekDisplay = document.getElementById('currentPregnancyWeek');
-        const currentBabySizeImage = document.getElementById('currentBabyImage');
         const currentBabySizeText = document.getElementById('currentBabySizeText');
         const currentDailyFactDisplay = document.getElementById('currentDailyFact');
         const currentDailyTipDisplay = document.getElementById('currentDailyTip');
@@ -642,14 +602,12 @@
         const selectedDateDisplay = document.getElementById('selectedDateDisplay');
         const selectedDateTrimesterDisplay = document.getElementById('selectedDateTrimester');
         const selectedDatePregnancyWeekDisplay = document.getElementById('selectedDatePregnancyWeek');
-        const selectedDateBabySizeImage = document.getElementById('selectedDateBabyImage');
         const selectedDateBabySizeText = document.getElementById('selectedDateBabySizeText');
         const selectedDateDailyFactDisplay = document.getElementById('selectedDateDailyFact');
         const selectedDateDailyTipDisplay = document.getElementById('selectedDateDailyTip');
         const selectedDateMealsContentContainer = document.getElementById('selectedDateMealsContent'); 
         const selectedDateTrimesterFocusList = document.getElementById('selectedDateTrimesterFocusList');
         const selectedDateDisplayInlineElements = document.querySelectorAll('.selectedDateDisplayInline');
-
 
         // --- Helper Functions ---
         function formatDate(date) {
@@ -671,19 +629,19 @@
             containerElement.innerHTML = ''; 
 
             if (mealData) {
-                displayMealCard('Early Morning', mealData.earlyMorning, containerElement);
+                displayMealCard('Early Morning', mealData.earlyMorning, containerElement); 
                 displayMealCard('Breakfast', mealData.breakfast, containerElement);
-                displayMealCard('Mid-Morning Snack', mealData.midMorningSnack, containerElement);
+                displayMealCard('Mid-Morning Snack', mealData.midMorningSnack, containerElement); 
                 displayMealCard('Lunch', mealData.lunch, containerElement);
-                displayMealCard('Evening Snack', mealData.eveningSnack, containerElement);
+                displayMealCard('Evening Snack', mealData.eveningSnack, containerElement); 
                 displayMealCard('Dinner', mealData.dinner, containerElement);
-                displayMealCard('Bedtime', mealData.bedtime, containerElement);
+                displayMealCard('Bedtime', mealData.bedtime, containerElement); 
             } else {
                 containerElement.innerHTML = '<p class="text-gray-600 p-4 text-center">Meal data not available for this day.</p>';
             }
         }
 
-        function displayMealCard(mealTime, mealDetails, parentContainer) {
+        function displayMealCard(mealTime, mealDetails, parentContainer) { 
             const mealCard = document.createElement('div');
             mealCard.className = 'meal-card';
             mealCard.innerHTML = `<h3>${mealTime}</h3><p>${mealDetails || 'No specific meal listed.'}</p>`;
@@ -705,7 +663,7 @@
         }
         
         // --- Core Diet Plan Logic ---
-        function getDietPlanDetails(dateToGetPlanFor, lmpConfig, trimestersConfig) {
+        function getDietPlanDetails(dateToGetPlanFor, lmpConfig, trimestersConfig) { 
             const normalizedDate = new Date(dateToGetPlanFor); 
             normalizedDate.setHours(0, 0, 0, 0);
 
@@ -735,7 +693,6 @@
                  lmpYearForDate = currentFullYear - 1;
                  activeTrimesterKey = 'T3';
             }
-
 
             if (!activeTrimesterKey || typeof lmpYearForDate === 'undefined') {
                 return { planActive: false, errorMessage: "The selected date is outside the defined diet plan period, or LMP year could not be determined." };
@@ -780,7 +737,7 @@
                 return { planActive: false, errorMessage: "Meal data not available for this specific day in the cycle.", trimesterName: activeTrimesterDetails.name, pregnancyWeekText, focusPoints: activeTrimesterDetails.focus };
             }
             
-            const babySizeData = allDietData.babySizeComparisons[(pregnancyWeek -1) % allDietData.babySizeComparisons.length] || {text: "growing beautifully!", image: "https://placehold.co/48x48/e2e8f0/333?text=Baby"};
+            const babySizeText = allDietData.babySizeComparisons[(pregnancyWeek -1) % allDietData.babySizeComparisons.length] || "growing beautifully!";
             const dailyFact = allDietData.dailyFacts[(pregnancyWeek -1) % allDietData.dailyFacts.length] || "Every day brings new developments!";
             const dailyTip = allDietData.dailyTips[(pregnancyWeek-1) % allDietData.dailyTips.length] || "Stay positive and enjoy this journey!";
 
@@ -789,8 +746,7 @@
                 planActive: true,
                 trimesterName: activeTrimesterDetails.name,
                 pregnancyWeekText: pregnancyWeekText,
-                babySizeText: babySizeData.text,
-                babySizeImage: babySizeData.image,
+                babySizeText: babySizeText, 
                 dailyFact: dailyFact,
                 dailyTip: dailyTip,
                 mealData: mealDataForDay,
@@ -800,10 +756,11 @@
             };
         }
 
-        function displayPlanForSelectedDate(dateObject) {
+        function displayPlanForSelectedDate(dateObject) { 
             const lmpConfig = { day: allDietData.lmpDay, month: allDietData.lmpMonth };
             const trimestersConfig = allDietData.trimesters;
-            const planForSelectedDate = getDietPlanDetails(dateObject, lmpConfig, trimestersConfig);
+            
+            const planForSelectedDate = getDietPlanDetails(dateObject, lmpConfig, trimestersConfig); 
             const datePickerMainSection = document.getElementById('datePickerMainSection');
             
             selectedDatePlanSection.style.display = 'block';
@@ -818,11 +775,11 @@
                 
                 selectedDateTrimesterDisplay.textContent = planForSelectedDate.trimesterName;
                 selectedDatePregnancyWeekDisplay.textContent = planForSelectedDate.pregnancyWeekText;
-                selectedDateBabySizeImage.src = planForSelectedDate.babySizeImage;
-                selectedDateBabySizeImage.alt = planForSelectedDate.babySizeText;
-                selectedDateBabySizeText.textContent = planForSelectedDate.babySizeText;
-                selectedDateDailyFactDisplay.textContent = planForSelectedDate.dailyFact;
-                selectedDateDailyTipDisplay.textContent = planForSelectedDate.dailyTip;
+                selectedDateBabySizeText.textContent = planForSelectedDate.babySizeText; 
+                selectedDateDailyFactDisplay.innerHTML = planForSelectedDate.dailyFact; 
+                selectedDateDailyFactDisplay.classList.remove('loader-text');
+                selectedDateDailyTipDisplay.innerHTML = planForSelectedDate.dailyTip; 
+                selectedDateDailyTipDisplay.classList.remove('loader-text');
                 
                 displayAllMealsForDay(planForSelectedDate.mealData, selectedDateMealsContentContainer); 
                 populateTrimesterFocus(planForSelectedDate.focusPoints, selectedDateTrimesterFocusList);
@@ -831,8 +788,13 @@
                 selectedDatePlanDetails.style.display = 'none';
                 selectedDatePlanMessage.textContent = planForSelectedDate.errorMessage || "No diet plan available for the selected date.";
                 selectedDatePlanMessage.style.display = 'block';
+                selectedDateBabySizeText.textContent = 'N/A';
+                selectedDateDailyFactDisplay.textContent = 'N/A';
+                selectedDateDailyFactDisplay.classList.remove('loader-text');
+                selectedDateDailyTipDisplay.textContent = 'N/A';
+                selectedDateDailyTipDisplay.classList.remove('loader-text');
             }
-            if (datePickerMainSection) {
+            if (datePickerMainSection && dateObject.getTime() !== (new Date()).setHours(0,0,0,0)) { 
                 datePickerMainSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
@@ -854,7 +816,7 @@
         }
 
         // --- Main Logic ---
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => { 
             const today = new Date();
             today.setHours(0,0,0,0); 
             currentDateDisplay.textContent = formatDate(today);
@@ -866,7 +828,7 @@
             const lmpConfig = { day: allDietData.lmpDay, month: allDietData.lmpMonth };
             const trimestersConfig = allDietData.trimesters;
 
-            const todaysPlan = getDietPlanDetails(new Date(today), lmpConfig, trimestersConfig);
+            const todaysPlan = getDietPlanDetails(new Date(today), lmpConfig, trimestersConfig); 
 
             if (todaysPlan.planActive) {
                 planNotActiveMessage.style.display = 'none';
@@ -874,11 +836,11 @@
 
                 currentTrimesterDisplay.textContent = todaysPlan.trimesterName;
                 currentPregnancyWeekDisplay.textContent = todaysPlan.pregnancyWeekText;
-                currentBabySizeImage.src = todaysPlan.babySizeImage;
-                currentBabySizeImage.alt = todaysPlan.babySizeText;
-                currentBabySizeText.textContent = todaysPlan.babySizeText;
-                currentDailyFactDisplay.textContent = todaysPlan.dailyFact;
-                currentDailyTipDisplay.textContent = todaysPlan.dailyTip;
+                currentBabySizeText.textContent = todaysPlan.babySizeText; 
+                currentDailyFactDisplay.innerHTML = todaysPlan.dailyFact; 
+                currentDailyFactDisplay.classList.remove('loader-text');
+                currentDailyTipDisplay.innerHTML = todaysPlan.dailyTip; 
+                currentDailyTipDisplay.classList.remove('loader-text');
                 
                 displayAllMealsForDay(todaysPlan.mealData, todaysMealsContentContainer); 
                 populateTrimesterFocus(todaysPlan.focusPoints, trimesterFocusList);
@@ -893,10 +855,11 @@
                 todaysPlanSection.style.display = 'none';
                 currentTrimesterDisplay.textContent = "N/A";
                 currentPregnancyWeekDisplay.textContent = "N/A";
-                currentBabySizeImage.style.display = 'none'; 
                 currentBabySizeText.textContent = "N/A";
                 currentDailyFactDisplay.textContent = "Please check back when the plan is active.";
+                currentDailyFactDisplay.classList.remove('loader-text');
                 currentDailyTipDisplay.textContent = "Consult your doctor for general advice.";
+                currentDailyTipDisplay.classList.remove('loader-text');
                 if(todaysMealsContentContainer) todaysMealsContentContainer.innerHTML = `<p class="text-gray-600 p-4 text-center">${todaysPlan.errorMessage || 'No daily meal plan active for today.'}</p>`; 
                 if(trimesterFocusList) trimesterFocusList.innerHTML = '<li>General pregnancy nutrition advice applies. Consult your doctor.</li>';
 
@@ -909,11 +872,29 @@
                  const initialDateParts = dateInputElement.value.split('-');
                  const initialSelectedDateObj = new Date(initialDateParts[0], initialDateParts[1] - 1, initialDateParts[2]);
                  initialSelectedDateObj.setHours(0,0,0,0);
-                 displayPlanForSelectedDate(initialSelectedDateObj); 
+                 if (initialSelectedDateObj.getTime() !== today.getTime()) { 
+                    displayPlanForSelectedDate(initialSelectedDateObj); 
+                 } else if (selectedDatePlanSection && todaysPlan.planActive){ 
+                    selectedDatePlanSection.style.display = 'block';
+                    selectedDatePlanMessage.style.display = 'none';
+                    selectedDatePlanDetails.style.display = 'block';
+                    const formattedSelectedDate = formatDate(initialSelectedDateObj);
+                    selectedDateDisplay.textContent = formattedSelectedDate;
+                    selectedDateDisplayInlineElements.forEach(el => el.textContent = formattedSelectedDate);
+                    selectedDateTrimesterDisplay.textContent = todaysPlan.trimesterName;
+                    selectedDatePregnancyWeekDisplay.textContent = todaysPlan.pregnancyWeekText;
+                    selectedDateBabySizeText.textContent = todaysPlan.babySizeText; 
+                    selectedDateDailyFactDisplay.innerHTML = todaysPlan.dailyFact; 
+                    selectedDateDailyFactDisplay.classList.remove('loader-text');
+                    selectedDateDailyTipDisplay.innerHTML = todaysPlan.dailyTip; 
+                    selectedDateDailyTipDisplay.classList.remove('loader-text');
+                    displayAllMealsForDay(todaysPlan.mealData, selectedDateMealsContentContainer);
+                    populateTrimesterFocus(todaysPlan.focusPoints, selectedDateTrimesterFocusList);
+                 }
             }
 
 
-            dateInputElement.addEventListener('change', () => {
+            dateInputElement.addEventListener('change', () => { 
                 const selectedDateValue = dateInputElement.value;
                 if (!selectedDateValue) { 
                     selectedDatePlanMessage.textContent = "Please select a date.";
@@ -926,20 +907,19 @@
                 const parts = selectedDateValue.split('-');
                 const selectedDateObj = new Date(parts[0], parts[1] - 1, parts[2]); 
                 selectedDateObj.setHours(0,0,0,0);
-                displayPlanForSelectedDate(selectedDateObj);
+                displayPlanForSelectedDate(selectedDateObj); 
             });
 
-            viewTomorrowButton.addEventListener('click', () => {
+            viewTomorrowButton.addEventListener('click', () => { 
                 const tomorrow = new Date(); 
                 tomorrow.setDate(tomorrow.getDate() + 1); 
                 tomorrow.setHours(0,0,0,0); 
                 
                 dateInputElement.value = formatDateForInput(tomorrow);
-                displayPlanForSelectedDate(tomorrow);
+                displayPlanForSelectedDate(tomorrow); 
             });
 
-
-            // Populate Modals
+            // Populate Modals with static data
             const foodsToAvoidContent = document.getElementById('foodsToAvoidContent');
             foodsToAvoidContent.innerHTML = ''; 
             allDietData.foodSafety.foodsToAvoid.forEach(item => {

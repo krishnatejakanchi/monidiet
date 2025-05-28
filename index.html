@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andhra Pregnancy Diet Plan for Monika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc; /* Tailwind gray-100 */
+        }
+        .meal-card {
+            background-color: white;
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            padding: 1.5rem; /* Tailwind p-6 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwind shadow-lg */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+        }
+        .meal-card h3 {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: #2d3748; /* Tailwind gray-800 */
+            margin-bottom: 0.5rem; /* Tailwind mb-2 */
+        }
+        .meal-card p {
+            color: #4a5568; /* Tailwind gray-700 */
+            font-size: 0.875rem; /* Tailwind text-sm */
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 0.5rem;
+        }
+        .modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .modal-close:hover,
+        .modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .info-button {
+            background-color: #4299e1; /* Tailwind blue-500 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            font-weight: 500; /* Tailwind font-medium */
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .info-button:hover {
+            background-color: #3182ce; /* Tailwind blue-600 */
+        }
+        /* Custom styles for date input to better match button */
+        input[type="date"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: white;
+            border: 1px solid #cbd5e0; /* Tailwind gray-300 */
+            padding: 0.4rem 0.75rem; /* Adjusted padding */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Tailwind shadow-sm */
+            line-height: 1.5; /* Ensure text is vertically centered */
+        }
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea; /* Tailwind indigo-500 or similar */
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.4); /* Tailwind indigo-300 with opacity */
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-900">
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-teal-600">Nourishing Monika &amp; Baby: Daily Diet Guide</h1>
+            <p id="currentDateDisplay" class="text-lg text-gray-600 mt-2"></p>
+        </header>
+
+        <div id="planNotActiveMessage" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert" style="display: none;">
+            <p class="font-bold">Diet Plan Information for Monika Today</p>
+            <p>The detailed daily diet plan is designed for the period from June 1st to January 23rd, based on an LMP of April 23rd. If today's date falls outside this specific window, please refer to the general nutritional information and tips provided, or consult your healthcare provider.</p>
+        </div>
+
+        <div id="todaysPlanSection">
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-1">Monika's Overview for Today</h2>
+                <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="currentTrimester"></span></p>
+                <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="currentPregnancyWeek"></span></p>
+            </div>
+
+            <div id="todaysMeals" class="mb-6">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Monika's Meal Plan for Today</h2>
+                </div>
+
+            <div id="trimesterFocus" class="bg-indigo-50 border-l-4 border-indigo-500 text-indigo-700 p-6 rounded-md mb-6">
+                <h2 class="text-xl font-semibold text-indigo-800 mb-3">Trimester Focus & Tips for Monika (Today)</h2>
+                <ul id="trimesterFocusList" class="list-disc list-inside space-y-1 text-sm">
+                    </ul>
+            </div>
+        </div>
+
+        <div class="mt-10 pt-8 border-t border-gray-300">
+            <h2 class="text-2xl font-semibold text-purple-700 mb-4 text-center md:text-left">View Plan for Monika on a Specific Date</h2>
+            <div class="flex flex-col sm:flex-row gap-3 mb-6 items-center justify-center md:justify-start">
+                <input type="date" id="dateInput" class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
+                <button id="viewPlanButton" class="info-button bg-purple-500 hover:bg-purple-600 w-full sm:w-auto">View Plan</button>
+            </div>
+            <div id="selectedDatePlanSection" class="mt-4" style="display: none;">
+                <div id="selectedDatePlanMessage" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert" style="display: none;">
+                    </div>
+                <div id="selectedDatePlanDetails">
+                    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                        <h3 class="text-xl font-semibold text-purple-700 mb-1">Overview for Monika on <span id="selectedDateDisplay"></span></h3>
+                        <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="selectedDateTrimester"></span></p>
+                        <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="selectedDatePregnancyWeek"></span></p>
+                    </div>
+                    <div id="selectedDateMeals" class="mb-6">
+                        <h3 class="text-xl font-semibold text-purple-700 mb-4">Meal Plan for Monika on <span class="selectedDateDisplayInline"></span></h3>
+                        </div>
+                    <div id="selectedDateTrimesterFocus" class="bg-fuchsia-50 border-l-4 border-fuchsia-500 text-fuchsia-700 p-6 rounded-md mb-6">
+                        <h3 class="text-lg font-semibold text-fuchsia-800 mb-3">Trimester Focus & Tips for Monika</h3>
+                        <ul id="selectedDateTrimesterFocusList" class="list-disc list-inside space-y-1 text-sm">
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 mt-10">
+            <button id="foodSafetyBtn" class="info-button w-full">Food Safety Guidelines</button>
+            <button id="keyNutrientsBtn" class="info-button w-full">Key Nutrients Info</button>
+            <button id="lifestyleBtn" class="info-button w-full">Lifestyle & Supplements</button>
+        </div>
+
+        <div id="foodSafetyModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('foodSafetyModal')">&times;</span>
+                <h2 class="text-2xl font-semibold text-red-700 mb-4">Food Safety Guidelines for Monika</h2>
+                <div id="foodsToAvoidContent" class="mb-6">
+                    <h3 class="text-xl font-medium text-red-600 mb-2">Foods to Limit or Avoid</h3>
+                </div>
+                <div id="foodHandlingContent">
+                    <h3 class="text-xl font-medium text-red-600 mb-2">Safe Food Handling Practices</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="keyNutrientsModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('keyNutrientsModal')">&times;</span>
+                <h2 class="text-2xl font-semibold text-green-700 mb-4">Key Nutrients for Monika's Pregnancy</h2>
+                <div id="keyNutrientsContent">
+                </div>
+            </div>
+        </div>
+
+        <div id="lifestyleModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('lifestyleModal')">&times;</span>
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4">Lifestyle & Supplements for Monika</h2>
+                <div id="lifestyleContent">
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-sm text-gray-500 mt-12 py-4 border-t border-gray-200">
+            <p>&copy; <span id="currentYear"></span> Pregnancy Diet Guide for Monika. Consult your doctor for personalized advice.</p>
+            <p class="mt-1">This plan is based on the "Nourishing Two: A Comprehensive Andhra Pradesh Pregnancy Diet Guide" document.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- DATA STORE ---
+        const allDietData = {
+            lmpDay: 23, // April 23rd
+            lmpMonth: 3, // 0-indexed for April
+            trimesters: {
+                T1: {
+                    name: "First Trimester",
+                    planStartMonth: 5, // June (0-indexed)
+                    planStartDate: 1,
+                    planEndMonth: 6,   // July
+                    planEndDate: 22,
+                    focus: [
+                        "Folate is crucial for neural tube development. Include plenty of green leafy vegetables, legumes, and fortified grains.",
+                        "Manage Nausea: Smaller, frequent meals may be better tolerated. Ginger (e.g., allam chutney, ginger tea in moderation) can help. Avoid overly spicy or fatty foods if they trigger nausea.",
+                        "Nutrient Density: Even if appetite is low, focus on making every bite count with nutrient-rich foods.",
+                        "Hydration: Essential, especially if experiencing vomiting. Sip fluids throughout the day.",
+                        "Iron: Begin building iron stores. Include green leafy vegetables, ragi, dates, and legumes."
+                    ],
+                    days: [
+                        { // Day 1 (T1)
+                            earlyMorning: "1 glass warm water with lemon juice. After 15-20 mins: 5-6 soaked almonds + 2 walnuts.",
+                            breakfast: "3 Idlis with 1 katori sambar (with drumstick, carrots) and 2 tsp peanut chutney.",
+                            midMorningSnack: "1 medium Guava OR 1 small bowl Pomegranate.",
+                            lunch: "1.5 katori Rice, 1 katori Palakura Pappu (Spinach Dal), 1 katori Cabbage Vepudu (stir-fry, minimal oil), 1/2 katori Curd.",
+                            eveningSnack: "1 glass Buttermilk (Majjiga) with a pinch of asafoetida & curry leaves OR 1 small bowl Sprouts chaat (steamed).",
+                            dinner: "2 soft Pesarattu (Moong Dal Dosa) with 2 tsp Allam (Ginger) chutney. 1 katori mixed vegetable kurma (lightly spiced).",
+                            bedtime: "Optional: 1 glass (150ml) warm milk."
+                        },
+                        { // Day 2 (T1)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: Handful of mixed nuts (almonds, cashews).",
+                            breakfast: "1 large katori Vegetable Upma (with carrots, peas, beans) with 1/2 katori curd.",
+                            midMorningSnack: "1 medium Apple OR 1 Orange.",
+                            lunch: "1.5 katori Rice, 1 katori Tomato Pappu (Tomato Dal), 1 katori Bendakaya (Okra) Fry (minimal oil), 1 small bowl cucumber-carrot salad.",
+                            eveningSnack: "1 glass Coconut Water OR 1 small Banana.",
+                            dinner: "2 whole wheat Roti (if consumed) OR 1.5 katori Rice, 1 katori Sorakaya (Bottle Gourd) Curry, 1/2 katori mixed dal.",
+                            bedtime: "Optional: 1 glass (150ml) warm milk with a pinch of turmeric."
+                        },
+                        { // Day 3 (T1)
+                            earlyMorning: "1 glass warm water with a few drops of ginger juice (if nausea). After 15-20 mins: 2-3 Dates.",
+                            breakfast: "2 Plain Dosa with 1 katori vegetable sambar and 2 tsp coconut chutney.",
+                            midMorningSnack: "1 small bowl mixed fruits (e.g., papaya - ripe, banana).",
+                            lunch: "1.5 katori Rice, 1 katori Gongura Pappu (Sorrel Leaves Dal - in moderation), 1 katori Dondakaya (Ivy Gourd) Vepudu (minimal oil), 1/2 katori Curd.",
+                            eveningSnack: "1 handful Roasted Peanuts (unsalted) OR 1 glass Ragi Malt (unsweetened or lightly sweetened with jaggery).",
+                            dinner: "1 large katori Vegetable Pulao (with rice, peas, carrots, beans) with 1 katori plain curd or vegetable raita.",
+                            bedtime: "Optional: 1 glass (150ml) warm milk."
+                        },
+                        { // Day 4 (T1)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: 5-6 soaked almonds.",
+                            breakfast: "1 Boiled Egg (well-cooked) and 2 slices whole wheat toast OR 1 katori Oats Porridge with milk and chopped fruit/nuts.",
+                            midMorningSnack: "1 medium Pear OR 1 small bowl Grapes.",
+                            lunch: "1.5 katori Rice, 1 katori Mamidikaya Pappu (Raw Mango Dal - seasonal, tangy, good for nausea), 1 katori Carrot-Beans Poriyal (stir-fry), 1/2 katori Curd.",
+                            eveningSnack: "1 small Sweet Potato (boiled/steamed) chaat OR 1 glass Lemonade (fresh, not too sugary).",
+                            dinner: "2 soft Uthappam (plain or with onion/tomato topping) with 1 katori sambar.",
+                            bedtime: "Optional: 1 glass (150ml) warm milk with a pinch of cardamom."
+                        },
+                        { // Day 5 (T1)
+                            earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 2 walnuts + 1 fig (soaked).",
+                            breakfast: "3 Dibba Rotti (thick rice pancake, small pieces) with 2 tsp palli (groundnut) chutney OR 1 katori Semiya (Vermicelli) Upma with vegetables.",
+                            midMorningSnack: "1 medium Sapota (Chikoo) OR 1 small bowl Watermelon.",
+                            lunch: "1.5 katori Rice, 1 katori Mixed Vegetable Sambar (with drumstick, pumpkin, brinjal - moderate), 1 katori Thotakura (Amaranth Leaves) Fry (minimal oil), 1/2 katori Curd.",
+                            eveningSnack: "1 small bowl Sundal (boiled chickpeas with light seasoning) OR 1 glass fruit juice (freshly squeezed, pasteurized, e.g., orange - 150ml).",
+                            dinner: "1.5 katori Bisi Bele Bath (lentil-rice dish with vegetables) with 1/2 katori raita.",
+                            bedtime: "Optional: 1 glass (150ml) warm milk."
+                        },
+                        { // Day 6 (T1)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: Handful of raisins (soaked).",
+                            breakfast: "2 Ragi Dosa (Finger Millet Dosa) with 1 katori tomato-onion chutney.",
+                            midMorningSnack: "1 medium Banana.",
+                            lunch: "1.5 katori Rice, 1 katori Beerakaya Pappu (Ridge Gourd Dal), 1 katori Capsicum Fry (minimal oil), 1 small bowl mixed green salad (cucumber, tomato, carrot - well washed).",
+                            eveningSnack: "1 glass Lassi (sweet or salted, homemade with pasteurized curd) OR 1 piece Chikki (peanut/sesame jaggery bar - small).",
+                            dinner: "2 whole wheat Roti (if consumed) OR 1.5 katori Rice, 1 katori Paneer Butter Masala (homemade, less cream/butter, more tomato gravy) OR 1 katori Egg Curry (2 eggs, well-cooked), 1/2 katori green beans curry.",
+                            bedtime: "Optional: 1 glass (150ml) warm milk with a pinch of saffron (optional)."
+                        },
+                        { // Day 7 (T1)
+                            earlyMorning: "1 glass warm water with honey & lemon. After 15-20 mins: 4-5 cashews.",
+                            breakfast: "1 large katori Pongal (rice and lentil preparation, savory) with 1/2 katori gothsu (brinjal curry) or coconut chutney.",
+                            midMorningSnack: "1 small bowl Muskmelon OR 1 Orange.",
+                            lunch: "1.5 katori Rice, 1 katori Pulusu (tamarind stew with vegetables like okra, drumstick, sweet potato), 1 katori Aratikaya Vepudu (Raw Banana Fry, minimal oil), 1/2 katori Curd.",
+                            eveningSnack: "1 handful Makhana (fox nuts, roasted) OR 1 glass fresh lime soda (homemade, less sugar).",
+                            dinner: "1.5 katori Vegetable Khichdi (with rice, moong dal, mixed vegetables like carrot, peas, beans) with 1 tsp ghee and 1/2 katori curd.",
+                            bedtime: "Optional: 1 glass (150ml) warm milk."
+                        }
+                    ]
+                },
+                T2: {
+                    name: "Second Trimester",
+                    planStartMonth: 6, // July
+                    planStartDate: 23,
+                    planEndMonth: 9,   // October
+                    planEndDate: 28,
+                    focus: [
+                        "Increased Calories: An additional ~350 kcal per day is needed. Focus on nutrient-dense foods.",
+                        "Increased Protein: Needs rise. Include dals, legumes, dairy, eggs, and lean meats/fish.",
+                        "Iron: Demand increases significantly. Emphasize iron-rich foods and enhance absorption with Vitamin C.",
+                        "Calcium: Continue focusing on calcium-rich foods like dairy, ragi, sesame seeds.",
+                        "DHA: Important for brain and eye development. Include fatty fish (low mercury), walnuts, flaxseeds."
+                    ],
+                    days: [
+                        { // Day 1 (T2)
+                            earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 6-8 soaked almonds + 2-3 walnuts.",
+                            breakfast: "3-4 Idlis with 1.5 katori sambar (extra vegetables like pumpkin, carrots, drumstick) and 2 tsp peanut chutney + 1 boiled egg (well-cooked).",
+                            midMorningSnack: "1 medium Apple + 1 small bowl Curd (100g).",
+                            lunch: "2 katori Rice, 1.5 katori Palakura Pappu (Spinach Dal), 1 katori Cabbage Vepudu (minimal oil), 1 katori Curd.",
+                            eveningSnack: "1 glass Buttermilk (Majjiga) + 1 small bowl Chana Chaat (boiled chickpeas with onion, tomato, lemon).",
+                            dinner: "2-3 soft Pesarattu with 2 tsp Allam chutney. 1.5 katori mixed vegetable kurma OR 100g grilled/baked Fish (low mercury, well-cooked).",
+                            bedtime: "Optional: 1 glass (200ml) warm milk."
+                        },
+                        { // Day 2 (T2)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: Handful of mixed nuts and seeds (almonds, walnuts, pumpkin seeds).",
+                            breakfast: "1.5 large katori Vegetable Upma (with extra vegetables and 1 tbsp roasted peanuts) with 1 katori curd.",
+                            midMorningSnack: "1 Orange + 1 small glass Milk (150ml).",
+                            lunch: "2 katori Rice, 1.5 katori Tomato Pappu, 1 katori Bendakaya (Okra) Fry (minimal oil) + 1 katori Bachalikura (Malabar Spinach) stir-fry, small bowl cucumber-carrot-onion salad.",
+                            eveningSnack: "1 glass Coconut Water + 1 medium Banana.",
+                            dinner: "2-3 whole wheat Roti OR 2 katori Rice, 1.5 katori Sorakaya (Bottle Gourd) Curry with Chana Dal, 1/2 katori mixed dal OR 100g Chicken curry (well-cooked, lean).",
+                            bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of turmeric."
+                        },
+                        { // Day 3 (T2)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: 3-4 Dates + 4-5 almonds.",
+                            breakfast: "2-3 Plain Dosa with 1.5 katori vegetable sambar and 2 tsp coconut chutney + 1 glass (200ml) milk.",
+                            midMorningSnack: "1 small bowl mixed fruits (e.g., grapes, apple slices).",
+                            lunch: "2 katori Rice, 1.5 katori Gongura Pappu (in moderation) OR Moong Dal with spinach, 1 katori Dondakaya (Ivy Gourd) Coconut Fry, 1 katori Curd.",
+                            eveningSnack: "1 handful Roasted Chana (chickpeas) OR 1 glass Ragi Malt with 1 tsp jaggery + 1 small fruit.",
+                            dinner: "1.5 large katori Vegetable Pulao (with extra vegetables and paneer cubes/peas) with 1.5 katori plain curd or vegetable raita.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk."
+                        },
+                        { // Day 4 (T2)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: 6-8 soaked almonds + 1 dried fig.",
+                            breakfast: "2 Boiled Eggs (well-cooked) and 2 slices whole wheat toast with avocado/butter OR 1.5 katori Oats Porridge with milk, chopped fruits, nuts, and seeds.",
+                            midMorningSnack: "1 medium Pomegranate.",
+                            lunch: "2 katori Rice, 1.5 katori Mamidikaya Pappu (seasonal) OR Lemon Dal, 1 katori Carrot-Beans-Peas Poriyal, 1 katori Curd.",
+                            eveningSnack: "1 large Sweet Potato (boiled/steamed) chaat with lemon and chaat masala OR 1 Paneer Tikka skewer (homemade, baked/grilled).",
+                            dinner: "3 soft Uthappam (mixed vegetable topping) with 1.5 katori sambar.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of cardamom."
+                        },
+                        { // Day 5 (T2)
+                            earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 2-3 walnuts + 5-6 pistachios.",
+                            breakfast: "1.5 katori Semiya (Vermicelli) Upma with plenty of vegetables and peanuts + 1 glass (200ml) buttermilk.",
+                            midMorningSnack: "1 medium Guava + 1 small bowl sprouts.",
+                            lunch: "2 katori Rice, 1.5 katori Mixed Vegetable Sambar (with extra lentils and vegetables like drumstick, pumpkin, ash gourd), 1 katori Thotakura (Amaranth Leaves) Garlic Fry, 1 katori Curd.",
+                            eveningSnack: "1.5 katori Sundal (boiled black chickpeas/rajma) OR Fruit salad with a sprinkle of nuts.",
+                            dinner: "2 katori Bisi Bele Bath (with extra vegetables and 1 tsp ghee) with 1 katori cucumber raita.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk."
+                        },
+                        { // Day 6 (T2)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: Handful of soaked raisins and 2-3 cashews.",
+                            breakfast: "2-3 Ragi Dosa with 1.5 katori tomato-onion chutney and 1/2 katori sambar.",
+                            midMorningSnack: "1 medium Banana + 1 handful groundnuts.",
+                            lunch: "2 katori Rice, 1.5 katori Beerakaya Pappu (Ridge Gourd Dal), 1 katori Capsicum-Onion Fry, 1 katori mixed green salad with lemon dressing.",
+                            eveningSnack: "1 glass Lassi (homemade, with fruit like mango if seasonal) OR 1 small bowl Poha (flattened rice) with vegetables.",
+                            dinner: "2-3 whole wheat Roti OR 2 katori Rice, 1.5 katori Paneer Bhurji (scrambled Indian cheese with spices and vegetables) OR 1.5 katori Egg Bhurji (2-3 eggs), 1 katori green peas curry.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of saffron."
+                        },
+                        { // Day 7 (T2)
+                            earlyMorning: "1 glass warm water with honey & lemon. After 15-20 mins: 5-6 almonds + 1 date.",
+                            breakfast: "1.5 large katori Pongal (with extra moong dal and 1 tsp ghee) with 1 katori gothsu or coconut chutney + 1 small fruit.",
+                            midMorningSnack: "1 small bowl Muskmelon chunks + 1/2 katori curd.",
+                            lunch: "2 katori Rice, 1.5 katori Pulusu (tamarind stew with a variety of vegetables like okra, drumstick, sweet potato, brinjal), 1 katori Aratikaya Vepudu (Raw Banana Fry, minimal oil), 1 katori Curd.",
+                            eveningSnack: "1.5 handful Makhana (roasted with a pinch of salt/pepper) OR 1 glass vegetable juice (e.g., carrot-tomato, fresh, pasteurized).",
+                            dinner: "2 katori Vegetable Khichdi (with extra dal and vegetables) with 1.5 tsp ghee and 1 katori curd/raita.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk."
+                        }
+                    ]
+                },
+                T3: {
+                    name: "Third Trimester",
+                    planStartMonth: 9, // October
+                    planStartDate: 29,
+                    planEndMonth: 0,   // January (next year)
+                    planEndDate: 23,
+                    focus: [
+                        "Continued Caloric Needs: Maintain the additional ~350 kcal per day.",
+                        "Highest Protein Needs: Protein requirements peak. Ensure high-quality protein at each meal.",
+                        "Iron & Calcium: Continue to be critical. Iron stores for the baby are built up now.",
+                        "DHA: Essential for continued brain maturation.",
+                        "Fibre & Fluids: Help manage constipation and prepare for labor."
+                    ],
+                    days: [
+                        { // Day 1 (T3)
+                            earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 8-10 soaked almonds + 3-4 walnuts.",
+                            breakfast: "2 Paneer stuffed Paratha (whole wheat, lightly pan-fried with minimal oil) with 1 katori curd OR 4 Idlis with 1.5 katori sambar + 2 boiled egg whites.",
+                            midMorningSnack: "1 medium Apple + 1 small bowl Greek Yogurt/Hung Curd (150g).",
+                            lunch: "2 katori Rice OR 3 Roti, 1.5 katori Fish Curry (low mercury, e.g., sardines/pomfret, 100-120g fish) OR 1.5 katori Chicken Curry (100-120g chicken), 1 katori Palakura (Spinach) stir-fry with garlic, 1 katori Curd. (Vegetarian: 1.5 katori Rajma/Chole curry instead of fish/chicken).",
+                            eveningSnack: "1 glass Milkshake (banana/mango with milk and nuts, no added sugar) OR 1 bowl Mixed Sprouts and Corn Salad.",
+                            dinner: "2-3 soft Pesarattu with 1 katori Chana Masala (chickpea curry). 1 katori mixed vegetable salad.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk with nuts powder."
+                        },
+                        { // Day 2 (T3)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: Handful of mixed nuts and seeds (include flaxseeds).",
+                            breakfast: "2 Moong Dal Cheela (lentil pancakes) stuffed with grated paneer/vegetables, with mint chutney + 1 glass milk.",
+                            midMorningSnack: "1 Orange + 1 handful roasted peanuts.",
+                            lunch: "2 katori Rice OR 3 Roti, 1.5 katori Dal Makhani (homemade, less butter/cream) OR 1.5 katori Soya Chunks Curry, 1 katori Bendakaya (Okra) Masala, 1 katori cucumber-tomato-onion raita.",
+                            eveningSnack: "1 glass Coconut Water + 1 bowl Fruit Chaat (apple, pear, pomegranate).",
+                            dinner: "2 whole wheat Roti OR 1.5 katori Rice, 1.5 katori Egg Curry (2-3 eggs, well-cooked) OR 1.5 katori Mutter Paneer (peas and cottage cheese curry), 1 katori Thotakura (Amaranth) stir-fry.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk with turmeric and black pepper."
+                        },
+                        { // Day 3 (T3)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: 4-5 Dates + 5-6 almonds.",
+                            breakfast: "2-3 Mixed Dal Dosa (adai) with 1 katori avial (mixed vegetables in coconut gravy) OR 2 slices whole wheat bread with 2 scrambled eggs and spinach.",
+                            midMorningSnack: "1 small bowl mixed berries (if available) OR 1 Guava + 1/2 katori curd.",
+                            lunch: "2 katori Rice OR Quinoa Pulao, 1.5 katori Gutti Vankaya Kura (Stuffed Brinjal Curry, ensure brinjal is well-cooked, moderate intake) OR 1.5 katori Chikkudu Kaya (Broad Beans) Curry, 1 katori Gongura Pachadi (pickle-style chutney, in moderation), 1 katori Curd.",
+                            eveningSnack: "1 glass Ragi Malt with nuts OR 1 bowl Steamed Corn with lemon and pepper.",
+                            dinner: "1.5 large katori Vegetable Biryani (with plenty of vegetables, paneer/soya chunks, and basmati rice) with 1.5 katori mixed vegetable raita.",
+                            bedtime: "Optional: 1 glass (200ml) warm milk."
+                        },
+                        { // Day 4 (T3)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: 6-8 soaked almonds + 2 dried apricots.",
+                            breakfast: "2 Vegetable Uthappam with 1.5 katori sambar + 1 glass (200ml) buttermilk.",
+                            midMorningSnack: "1 medium Pomegranate + 1 handful walnuts.",
+                            lunch: "2 katori Rice OR 3 Roti, 1.5 katori Pappu Charu (lentil and tamarind stew), 1 katori Munakkaya (Drumstick) Tomato Curry, 100g baked/grilled Fish (low mercury) OR 100g Tofu stir-fry, 1 katori Curd.",
+                            eveningSnack: "1 large Sweet Potato, boiled and mashed with a pinch of jaggery OR 1 bowl Makhana (fox nuts) and peanut mix.",
+                            dinner: "2 Jowar Roti (Sorghum flatbread) OR 1.5 katori Rice, 1.5 katori Methi Chicken (fenugreek chicken, well-cooked) OR 1.5 katori Methi Dal (fenugreek lentils), 1 katori Aloo Gobi (potato cauliflower, less potato).",
+                            bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of cardamom."
+                        },
+                        { // Day 5 (T3)
+                            earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 2-3 walnuts + 1 tbsp mixed seeds (pumpkin, sunflower).",
+                            breakfast: "1.5 katori Oats with milk, loaded with fruits, nuts, and seeds OR 2 Pesarattu with onion-ginger topping and Allam chutney.",
+                            midMorningSnack: "1 medium Pear + 1 small glass Lassi.",
+                            lunch: "2 katori Lemon Rice (with peanuts and curry leaves), 1.5 katori Mixed Vegetable Kootu (lentil and vegetable stew), 1 katori Cabbage Pachadi (cabbage relish), 1 katori Curd.",
+                            eveningSnack: "1 bowl Sundal (different legume, e.g., black-eyed peas) OR 1 whole wheat toast with peanut butter and banana slices.",
+                            dinner: "2 katori Ven Pongal (savory rice-lentil dish with ghee) with 1.5 katori sambar OR 2 Roti with 1.5 katori Palak Paneer (spinach and cottage cheese).",
+                            bedtime: "Optional: 1 glass (200ml) warm milk."
+                        },
+                        { // Day 6 (T3)
+                            earlyMorning: "1 glass warm water. After 15-20 mins: Handful of soaked black raisins and 2-3 cashews.",
+                            breakfast: "2-3 Ragi Idlis with 1.5 katori vegetable sambar and tomato chutney + 1 boiled egg.",
+                            midMorningSnack: "1 medium Banana + 1 small bowl yogurt with flaxseed powder.",
+                            lunch: "2 katori Rice OR 3 Roti, 1.5 katori Beerakaya Koora (Ridge Gourd Curry with poppy seeds/sesame paste), 1 katori Masoor Dal Tadka, 100g Chicken stir-fry with bell peppers OR 100g Paneer stir-fry, salad.",
+                            eveningSnack: "1 glass Almond Milk with dates OR 1 piece Bellam Undrallu (steamed rice flour jaggery balls - small).",
+                            dinner: "2 whole wheat Roti OR 1.5 katori Rice, 1.5 katori Fish Pulusu (low mercury, 100-120g fish) OR 1.5 katori Dal Palak (lentils with spinach), 1 katori Bendakaya Pulusu (okra tamarind stew).",
+                            bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of saffron."
+                        },
+                        { // Day 7 (T3)
+                            earlyMorning: "1 glass warm water with honey & lemon. After 15-20 mins: 5-6 almonds + 1-2 Brazil nuts (for selenium, if available).",
+                            breakfast: "1.5 large katori Khara Bath (savory semolina with vegetables and spices) with 1/2 katori coconut chutney + 1 small fruit.",
+                            midMorningSnack: "1 small bowl Grapes + 1 handful mixed seeds.",
+                            lunch: "2 katori Tomato Rice OR Vegetable Fried Rice (homemade, less oil, plenty of veggies), 1.5 katori Dalcha (lentil and meat/vegetable stew), 1 katori Potlakaya Koora (Snake Gourd Curry), 1 katori Curd.",
+                            eveningSnack: "1 glass Sattu drink (roasted gram flour drink, if available) OR 1 bowl Popcorn (plain, homemade).",
+                            dinner: "2 katori Vegetable and Moong Dal Khichdi with 1.5 tsp ghee, 1 katori kadhi (yogurt-gram flour curry) or plain curd, and papad (roasted).",
+                            bedtime: "Optional: 1 glass (200ml) warm milk."
+                        }
+                    ]
+                }
+            },
+            foodSafety: {
+                foodsToAvoid: [
+                    { category: "High-Mercury Fish", items: "Shark, swordfish, king mackerel, tuna (especially bigeye), marlin, tilefish. Risk of mercury toxicity." },
+                    { category: "Undercooked/Raw Seafood", items: "Sushi, sashimi, raw oysters. Risk of bacteria, viruses, parasites." },
+                    { category: "Undercooked/Raw Meat & Poultry", items: "Rare or medium-rare meat. Risk of Toxoplasma, Salmonella." },
+                    { category: "Processed & Deli Meats", items: "Hot dogs, lunch meats (unless heated to 165°F). Risk of Listeria." },
+                    { category: "Raw or Undercooked Eggs", items: "Runny yolks, homemade mayonnaise. Risk of Salmonella." },
+                    { category: "Organ Meat (e.g., Liver)", items: "Limit to a few ounces per week. Very high in preformed Vitamin A." },
+                    { category: "Raw Sprouts", items: "Alfalfa, clover, radish, mung bean (unless cooked thoroughly). Risk of bacteria." },
+                    { category: "Unpasteurized Dairy & Juices", items: "Raw milk, some soft cheeses, unpasteurized juices. Risk of Listeria, Salmonella." },
+                    { category: "Excess Caffeine", items: "Limit to <200 mg per day (approx. 1-2 small cups of coffee)." },
+                    { category: "Alcohol & Tobacco", items: "Complete avoidance. Harmful to fetal development." },
+                ],
+                handlingPractices: [
+                    "<strong>Clean:</strong> Wash hands thoroughly with soap and water before, during, and after handling food. Wash all fruits and vegetables under running water. Clean and sanitize cutting boards, dishes, utensils, and countertops.",
+                    "<strong>Separate:</strong> Keep raw meat, poultry, seafood, and eggs separate from ready-to-eat foods to prevent cross-contamination. Use separate cutting boards.",
+                    "<strong>Cook:</strong> Cook foods to their safe minimum internal temperatures. Use a food thermometer. (e.g., Poultry to 165°F, Ground meats to 160°F, Fish to 145°F, Eggs until firm).",
+                    "<strong>Chill:</strong> Refrigerate perishable foods promptly (within 2 hours, or 1 hour if temperature is above 90°F). Keep refrigerator at or below 40°F."
+                ]
+            },
+            keyNutrients: {
+                title: "Understanding Key Nutrients",
+                sections: [
+                    { heading: "Calories", text: "An increase of ~350 kcal/day from the second trimester is needed, focusing on quality from nutrient-dense foods like whole grains, fruits, vegetables, and lean proteins." },
+                    { heading: "Protein", text: "Essential for fetal growth. Good Andhra sources: dals (kandi pappu, pesara pappu), legumes, milk products, eggs, fish, chicken." },
+                    { heading: "Iron", text: "Prevents anemia. Sources: green leafy vegetables (palakura, gongura), ragi, dates, legumes, meat. Vitamin C aids absorption." },
+                    { heading: "Folic Acid", text: "Prevents neural tube defects. Sources: green leafy vegetables, legumes, nuts, fortified grains." },
+                    { heading: "Calcium & Vitamin D", text: "For bone development. Sources: dairy, ragi, sesame seeds. Vitamin D from sunlight, fortified milk, eggs." },
+                    { heading: "DHA (Omega-3)", text: "For brain and eye development. Sources: fatty fish (low mercury), walnuts, flaxseeds." },
+                    { heading: "Hydration", text: "Aim for 2.5-3 liters of fluids daily. Water, coconut water, buttermilk are good choices." }
+                ]
+            },
+            lifestyleAndSupplements: {
+                title: "Healthy Lifestyle and Supplements",
+                sections: [
+                    { heading: "Supplements", text: "<strong>Crucial:</strong> Only take supplements (Iron, Folic Acid, Calcium, Vitamin D, DHA, B12) as prescribed by your doctor. Self-medication can be harmful." },
+                    { heading: "Physical Activity", text: "Regular, moderate activity like walking is generally beneficial, unless advised otherwise by your doctor. Avoid strenuous activity." },
+                    { heading: "Sunlight Exposure", text: "Safe exposure to early morning/late afternoon sunlight (15-30 mins) helps Vitamin D synthesis." },
+                    { heading: "Rest and Sleep", text: "Adequate rest and quality sleep are vital. Avoid sleeping immediately after meals." },
+                    { heading: "Avoid Harmful Substances", text: "Complete avoidance of alcohol and tobacco (including passive smoking)." },
+                    { heading: "Manage Stress", text: "Practice relaxation techniques like meditation or light prenatal yoga." },
+                    { heading: "Regular Medical Check-ups", text: "Attend all antenatal appointments for monitoring and advice." }
+                ]
+            }
+        };
+
+        // --- DOM Elements ---
+        const currentDateDisplay = document.getElementById('currentDateDisplay');
+        const currentTrimesterDisplay = document.getElementById('currentTrimester');
+        const currentPregnancyWeekDisplay = document.getElementById('currentPregnancyWeek');
+        const todaysMealsContainer = document.getElementById('todaysMeals');
+        const trimesterFocusList = document.getElementById('trimesterFocusList');
+        const planNotActiveMessage = document.getElementById('planNotActiveMessage');
+        const todaysPlanSection = document.getElementById('todaysPlanSection');
+        const currentYearSpan = document.getElementById('currentYear');
+
+        // Date Picker Elements
+        const dateInputElement = document.getElementById('dateInput');
+        const viewPlanButton = document.getElementById('viewPlanButton');
+        const selectedDatePlanSection = document.getElementById('selectedDatePlanSection');
+        const selectedDatePlanMessage = document.getElementById('selectedDatePlanMessage');
+        const selectedDatePlanDetails = document.getElementById('selectedDatePlanDetails');
+        const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+        const selectedDateTrimesterDisplay = document.getElementById('selectedDateTrimester');
+        const selectedDatePregnancyWeekDisplay = document.getElementById('selectedDatePregnancyWeek');
+        const selectedDateMealsContainer = document.getElementById('selectedDateMeals');
+        const selectedDateTrimesterFocusList = document.getElementById('selectedDateTrimesterFocusList');
+        const selectedDateDisplayInlineElements = document.querySelectorAll('.selectedDateDisplayInline');
+
+
+        // --- Helper Functions ---
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        
+        function formatDateForInput(date) {
+            // Returns YYYY-MM-DD
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function displayMeal(mealTime, mealDetails, containerElement) {
+            const mealCard = document.createElement('div');
+            mealCard.className = 'meal-card';
+            mealCard.innerHTML = `<h3>${mealTime}</h3><p>${mealDetails || 'No specific meal listed.'}</p>`;
+            containerElement.appendChild(mealCard);
+        }
+
+        function populateTrimesterFocus(focusPoints, listElement) {
+            listElement.innerHTML = ''; // Clear previous
+            if (focusPoints && focusPoints.length > 0) {
+                focusPoints.forEach(point => {
+                    const li = document.createElement('li');
+                    li.textContent = point;
+                    listElement.appendChild(li);
+                });
+            } else {
+                listElement.innerHTML = '<li>No specific focus points for this trimester.</li>';
+            }
+        }
+        
+        // --- Core Diet Plan Logic ---
+        function getDietPlanDetails(dateToGetPlanFor, lmpConfig, trimestersConfig) {
+            const normalizedDate = new Date(dateToGetPlanFor); // Clone to avoid modifying original
+            normalizedDate.setHours(0, 0, 0, 0);
+
+            let lmpYearForDate;
+            const currentMonth = normalizedDate.getMonth();
+            const currentDayOfMonth = normalizedDate.getDate();
+            const currentFullYear = normalizedDate.getFullYear();
+            let activeTrimesterKey = null;
+
+            const t1StartDate = (year) => new Date(year, trimestersConfig.T1.planStartMonth, trimestersConfig.T1.planStartDate);
+            const t1EndDate = (year) => new Date(year, trimestersConfig.T1.planEndMonth, trimestersConfig.T1.planEndDate);
+            const t2StartDate = (year) => new Date(year, trimestersConfig.T2.planStartMonth, trimestersConfig.T2.planStartDate);
+            const t2EndDate = (year) => new Date(year, trimestersConfig.T2.planEndMonth, trimestersConfig.T2.planEndDate);
+            const t3StartDate = (year) => new Date(year, trimestersConfig.T3.planStartMonth, trimestersConfig.T3.planStartDate);
+            // T3 ends in Jan of LMPYear + 1
+            const t3EndDate = (year) => new Date(year + 1, trimestersConfig.T3.planEndMonth, trimestersConfig.T3.planEndDate);
+
+            if (normalizedDate >= t1StartDate(currentFullYear) && normalizedDate <= t1EndDate(currentFullYear)) {
+                lmpYearForDate = currentFullYear;
+                activeTrimesterKey = 'T1';
+            } else if (normalizedDate >= t2StartDate(currentFullYear) && normalizedDate <= t2EndDate(currentFullYear)) {
+                lmpYearForDate = currentFullYear;
+                activeTrimesterKey = 'T2';
+            } else if (normalizedDate >= t3StartDate(currentFullYear) && normalizedDate <= t3EndDate(currentFullYear)) {
+                // This case handles T3 starting in currentFullYear and ending in currentFullYear + 1
+                lmpYearForDate = currentFullYear;
+                activeTrimesterKey = 'T3';
+            } else if (normalizedDate.getFullYear() === currentFullYear && normalizedDate >= t3StartDate(currentFullYear - 1) && normalizedDate <= t3EndDate(currentFullYear - 1) ) {
+                 lmpYearForDate = currentFullYear - 1;
+                 activeTrimesterKey = 'T3';
+            }
+
+
+            if (!activeTrimesterKey || typeof lmpYearForDate === 'undefined') {
+                return { planActive: false, errorMessage: "The selected date is outside the defined diet plan period, or LMP year could not be determined." };
+            }
+
+            const activeTrimesterDetails = trimestersConfig[activeTrimesterKey];
+            const lmpReferenceDate = new Date(lmpYearForDate, lmpConfig.month, lmpConfig.day, 0, 0, 0, 0);
+            
+            const overallPlanStartDate = t1StartDate(lmpYearForDate);
+            const overallPlanEndDate = t3EndDate(lmpYearForDate); 
+
+            if (normalizedDate < overallPlanStartDate || normalizedDate > overallPlanEndDate) {
+                 return { planActive: false, errorMessage: "The selected date is outside the overall diet plan window (June 1st - Jan 23rd for the relevant pregnancy)." };
+            }
+
+            const pregnancyDays = Math.max(0, Math.floor((normalizedDate - lmpReferenceDate) / (1000 * 60 * 60 * 24)));
+            const pregnancyWeek = Math.floor(pregnancyDays / 7) + 1;
+            const pregnancyWeekText = `${pregnancyWeek} (Day ${pregnancyDays + 1} of pregnancy)`;
+
+            let cycleStartDateForTrimester;
+            if (activeTrimesterKey === 'T1') cycleStartDateForTrimester = t1StartDate(lmpYearForDate);
+            else if (activeTrimesterKey === 'T2') cycleStartDateForTrimester = t2StartDate(lmpYearForDate);
+            else if (activeTrimesterKey === 'T3') cycleStartDateForTrimester = t3StartDate(lmpYearForDate);
+            else { 
+                return { planActive: false, errorMessage: "Could not determine trimester cycle start date."};
+            }
+
+            if (normalizedDate < cycleStartDateForTrimester) {
+                 return { planActive: false, errorMessage: `Selected date is before the start of ${activeTrimesterDetails.name} for this pregnancy cycle.` };
+            }
+
+            const daysIntoTrimesterCycle = Math.floor((normalizedDate - cycleStartDateForTrimester) / (1000 * 60 * 60 * 24));
+            const dayIndexInCycle = daysIntoTrimesterCycle % 7;
+            
+            if (dayIndexInCycle < 0 || dayIndexInCycle >= activeTrimesterDetails.days.length) {
+                 return { planActive: false, errorMessage: "Calculated day index is out of bounds for the trimester's meal cycle." };
+            }
+
+            const mealDataForDay = activeTrimesterDetails.days[dayIndexInCycle];
+
+            if (!mealDataForDay) {
+                return { planActive: false, errorMessage: "Meal data not available for this specific day in the cycle.", trimesterName: activeTrimesterDetails.name, pregnancyWeekText, focusPoints: activeTrimesterDetails.focus };
+            }
+
+            return {
+                planActive: true,
+                trimesterName: activeTrimesterDetails.name,
+                pregnancyWeekText: pregnancyWeekText,
+                mealData: mealDataForDay,
+                focusPoints: activeTrimesterDetails.focus,
+                errorMessage: null,
+                lmpYearForDate: lmpYearForDate 
+            };
+        }
+
+
+        // --- Modal Functions ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+
+        // --- Main Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            currentDateDisplay.textContent = formatDate(today);
+            currentYearSpan.textContent = today.getFullYear();
+
+            const lmpConfig = { day: allDietData.lmpDay, month: allDietData.lmpMonth };
+            const trimestersConfig = allDietData.trimesters;
+
+            // Display Today's Plan
+            const todaysPlan = getDietPlanDetails(new Date(today), lmpConfig, trimestersConfig);
+
+            if (todaysPlan.planActive) {
+                planNotActiveMessage.style.display = 'none';
+                todaysPlanSection.style.display = 'block';
+
+                currentTrimesterDisplay.textContent = todaysPlan.trimesterName;
+                currentPregnancyWeekDisplay.textContent = todaysPlan.pregnancyWeekText;
+                
+                todaysMealsContainer.innerHTML = ''; 
+                const mealData = todaysPlan.mealData;
+                displayMeal('Early Morning', mealData.earlyMorning, todaysMealsContainer);
+                displayMeal('Breakfast', mealData.breakfast, todaysMealsContainer);
+                displayMeal('Mid-Morning Snack', mealData.midMorningSnack, todaysMealsContainer);
+                displayMeal('Lunch', mealData.lunch, todaysMealsContainer);
+                displayMeal('Evening Snack', mealData.eveningSnack, todaysMealsContainer);
+                displayMeal('Dinner', mealData.dinner, todaysMealsContainer);
+                displayMeal('Bedtime', mealData.bedtime, todaysMealsContainer);
+
+                populateTrimesterFocus(todaysPlan.focusPoints, trimesterFocusList);
+
+                const lmpYearForDatePicker = todaysPlan.lmpYearForDate || today.getFullYear();
+                dateInputElement.min = formatDateForInput(new Date(lmpYearForDatePicker, trimestersConfig.T1.planStartMonth, trimestersConfig.T1.planStartDate));
+                dateInputElement.max = formatDateForInput(new Date(lmpYearForDatePicker + 1, trimestersConfig.T3.planEndMonth, trimestersConfig.T3.planEndDate));
+
+            } else {
+                planNotActiveMessage.querySelector('p:nth-child(2)').textContent = todaysPlan.errorMessage || "No daily meal plan active for today. Please check the general guidelines.";
+                planNotActiveMessage.style.display = 'block';
+                todaysPlanSection.style.display = 'none';
+                currentTrimesterDisplay.textContent = "N/A";
+                currentPregnancyWeekDisplay.textContent = "N/A";
+                todaysMealsContainer.innerHTML = `<p class="text-gray-600 p-4 text-center">${todaysPlan.errorMessage || 'No daily meal plan active for today.'}</p>`;
+                trimesterFocusList.innerHTML = '<li>General pregnancy nutrition advice applies. Consult your doctor.</li>';
+
+                const fallbackLmpYear = today.getFullYear();
+                dateInputElement.min = formatDateForInput(new Date(fallbackLmpYear, trimestersConfig.T1.planStartMonth, trimestersConfig.T1.planStartDate));
+                dateInputElement.max = formatDateForInput(new Date(fallbackLmpYear + 1, trimestersConfig.T3.planEndMonth, trimestersConfig.T3.planEndDate));
+            }
+
+
+            // Event Listener for View Plan Button
+            viewPlanButton.addEventListener('click', () => {
+                const selectedDateValue = dateInputElement.value;
+                if (!selectedDateValue) {
+                    selectedDatePlanMessage.textContent = "Please select a date.";
+                    selectedDatePlanMessage.style.display = 'block';
+                    selectedDatePlanDetails.style.display = 'none';
+                    selectedDatePlanSection.style.display = 'block';
+                    return;
+                }
+
+                const parts = selectedDateValue.split('-');
+                const selectedDateObj = new Date(parts[0], parts[1] - 1, parts[2]); 
+                selectedDateObj.setHours(0,0,0,0);
+
+                const planForSelectedDate = getDietPlanDetails(selectedDateObj, lmpConfig, trimestersConfig);
+                selectedDatePlanSection.style.display = 'block';
+
+                if (planForSelectedDate.planActive) {
+                    selectedDatePlanMessage.style.display = 'none';
+                    selectedDatePlanDetails.style.display = 'block';
+
+                    const formattedSelectedDate = formatDate(selectedDateObj);
+                    selectedDateDisplay.textContent = formattedSelectedDate;
+                    selectedDateDisplayInlineElements.forEach(el => el.textContent = formattedSelectedDate);
+                    
+                    selectedDateTrimesterDisplay.textContent = planForSelectedDate.trimesterName;
+                    selectedDatePregnancyWeekDisplay.textContent = planForSelectedDate.pregnancyWeekText;
+
+                    selectedDateMealsContainer.innerHTML = ''; 
+                    const mealData = planForSelectedDate.mealData;
+                    displayMeal('Early Morning', mealData.earlyMorning, selectedDateMealsContainer);
+                    displayMeal('Breakfast', mealData.breakfast, selectedDateMealsContainer);
+                    displayMeal('Mid-Morning Snack', mealData.midMorningSnack, selectedDateMealsContainer);
+                    displayMeal('Lunch', mealData.lunch, selectedDateMealsContainer);
+                    displayMeal('Evening Snack', mealData.eveningSnack, selectedDateMealsContainer);
+                    displayMeal('Dinner', mealData.dinner, selectedDateMealsContainer);
+                    displayMeal('Bedtime', mealData.bedtime, selectedDateMealsContainer);
+
+                    populateTrimesterFocus(planForSelectedDate.focusPoints, selectedDateTrimesterFocusList);
+
+                } else {
+                    selectedDatePlanDetails.style.display = 'none';
+                    selectedDatePlanMessage.textContent = planForSelectedDate.errorMessage || "No diet plan available for the selected date.";
+                    selectedDatePlanMessage.style.display = 'block';
+                }
+            });
+
+            // Populate Modals
+            const foodsToAvoidContent = document.getElementById('foodsToAvoidContent');
+            foodsToAvoidContent.innerHTML = ''; 
+            allDietData.foodSafety.foodsToAvoid.forEach(item => {
+                const p = document.createElement('p');
+                p.className = 'mb-1 text-sm';
+                p.innerHTML = `<strong>${item.category}:</strong> ${item.items}`;
+                foodsToAvoidContent.appendChild(p);
+            });
+            const foodHandlingContent = document.getElementById('foodHandlingContent');
+            foodHandlingContent.innerHTML = ''; 
+            allDietData.foodSafety.handlingPractices.forEach(item => {
+                const p = document.createElement('p');
+                p.className = 'mb-2 text-sm';
+                p.innerHTML = item;
+                foodHandlingContent.appendChild(p);
+            });
+
+            const keyNutrientsContent = document.getElementById('keyNutrientsContent');
+            keyNutrientsContent.innerHTML = `<h3 class="text-xl font-medium text-green-600 mb-3">${allDietData.keyNutrients.title}</h3>`;
+            allDietData.keyNutrients.sections.forEach(section => {
+                const div = document.createElement('div');
+                div.className = 'mb-3';
+                div.innerHTML = `<h4 class="font-semibold text-md text-green-700">${section.heading}</h4><p class="text-sm text-gray-700">${section.text}</p>`;
+                keyNutrientsContent.appendChild(div);
+            });
+
+            const lifestyleContent = document.getElementById('lifestyleContent');
+            lifestyleContent.innerHTML = `<h3 class="text-xl font-medium text-blue-600 mb-3">${allDietData.lifestyleAndSupplements.title}</h3>`;
+            allDietData.lifestyleAndSupplements.sections.forEach(section => {
+                const div = document.createElement('div');
+                div.className = 'mb-3';
+                div.innerHTML = `<h4 class="font-semibold text-md text-blue-700">${section.heading}</h4><p class="text-sm text-gray-700">${section.text}</p>`;
+                lifestyleContent.appendChild(div);
+            });
+
+            document.getElementById('foodSafetyBtn').addEventListener('click', () => openModal('foodSafetyModal'));
+            document.getElementById('keyNutrientsBtn').addEventListener('click', () => openModal('keyNutrientsModal'));
+            document.getElementById('lifestyleBtn').addEventListener('click', () => openModal('lifestyleModal'));
+        });
+    </script>
+</body>
+</html>

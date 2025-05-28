@@ -229,7 +229,7 @@
                             breakfast: "3 Idlis with 1 small bowl of sambar (with drumstick, carrots) and 2 tsp peanut chutney.",
                             midMorningSnack: "1 medium Guava OR 1 small bowl Pomegranate.",
                             lunch: "1.5 bowls of Rice, 1 small bowl of Palakura Pappu (Spinach Dal), 1 small bowl of Cabbage Vepudu (stir-fry, minimal oil), 1/2 small bowl of Curd.",
-                            eveningSnack: "1 glass Buttermilk (Majjiga) with a pinch of asafoetida & curry leaves OR 1 small bowl Sprouts chaat (steamed).",
+                            eveningSnack: "1 glass Buttermilk (Majjiga) with curry leaves OR 1 small bowl Sprouts chaat (steamed).", // Asafoetida removed
                             dinner: "2 soft Pesarattu (Moong Dal Dosa) with 2 tsp Allam (Ginger) chutney. 1 small bowl of mixed vegetable kurma (lightly spiced).",
                             bedtime: "Optional: 1 glass (150ml) warm milk."
                         },
@@ -524,7 +524,7 @@
         }
         
         function formatDateForInput(date) {
-            // Returns yyyy-MM-dd
+            // Returns YYYY-MM-DD
             const year = date.getFullYear();
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const day = date.getDate().toString().padStart(2, '0');

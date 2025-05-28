@@ -79,16 +79,28 @@
             -moz-appearance: none;
             background-color: white;
             border: 1px solid #cbd5e0; /* Tailwind gray-300 */
-            padding: 0.4rem 0.75rem; /* Adjusted padding */
+            padding: 0.4rem 0.75rem; /* Adjusted padding for consistent look */
             border-radius: 0.375rem; /* Tailwind rounded-md */
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Tailwind shadow-sm */
             line-height: 1.5; /* Ensure text is vertically centered */
+            /* Ensure it takes text color from Tailwind */
+            color: currentColor; 
         }
         input[type="date"]:focus {
             outline: none;
             border-color: #667eea; /* Tailwind indigo-500 or similar */
             box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.4); /* Tailwind indigo-300 with opacity */
         }
+         /* Style for the date input placeholder text if browser supports it */
+        input[type="date"]::-webkit-datetime-edit-fields-wrapper { 
+            /* padding: 0.4rem 0;  Adjust as needed */
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 1;
+            cursor: pointer;
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg); /* Example to color it a bit */
+        }
+
     </style>
 </head>
 <body class="antialiased text-gray-900">
@@ -110,9 +122,9 @@
                 <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="currentPregnancyWeek"></span></p>
             </div>
 
-            <div id="todaysMeals" class="mb-6">
-                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Monika's Meal Plan for Today</h2>
-                </div>
+            <div class="mb-6"> <h2 class="text-2xl font-semibold text-teal-700 mb-4">Monika's Meal Plan for Today</h2>
+                <div id="todaysMealsContent"> </div>
+            </div>
 
             <div id="trimesterFocus" class="bg-indigo-50 border-l-4 border-indigo-500 text-indigo-700 p-6 rounded-md mb-6">
                 <h2 class="text-xl font-semibold text-indigo-800 mb-3">Trimester Focus & Tips for Monika (Today)</h2>
@@ -123,9 +135,9 @@
 
         <div class="mt-10 pt-8 border-t border-gray-300">
             <h2 class="text-2xl font-semibold text-purple-700 mb-4 text-center md:text-left">View Plan for Monika on a Specific Date</h2>
-            <div class="flex flex-col sm:flex-row gap-3 mb-6 items-stretch sm:items-center justify-center md:justify-start">
-                <input type="date" id="dateInput" class="w-full sm:flex-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 text-gray-700">
-                <button id="viewPlanButton" class="info-button bg-purple-500 hover:bg-purple-600 w-full sm:w-auto whitespace-nowrap">View Plan</button>
+            <div class="flex flex-col sm:flex-row gap-3 mb-6 items-stretch sm:items-center">
+                <input type="date" id="dateInput" class="w-full h-12 text-gray-700 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:flex-1">
+                <button id="viewPlanButton" class="info-button bg-purple-500 hover:bg-purple-600 w-full sm:w-auto h-12 flex items-center justify-center whitespace-nowrap">View Plan</button>
             </div>
             <div id="selectedDatePlanSection" class="mt-4" style="display: none;">
                 <div id="selectedDatePlanMessage" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert" style="display: none;">
@@ -136,9 +148,9 @@
                         <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="selectedDateTrimester"></span></p>
                         <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="selectedDatePregnancyWeek"></span></p>
                     </div>
-                    <div id="selectedDateMeals" class="mb-6">
-                        <h3 class="text-xl font-semibold text-purple-700 mb-4">Meal Plan for Monika on <span class="selectedDateDisplayInline"></span></h3>
-                        </div>
+                    <div class="mb-6"> <h3 class="text-xl font-semibold text-purple-700 mb-4">Meal Plan for Monika on <span class="selectedDateDisplayInline"></span></h3>
+                        <div id="selectedDateMealsContent"> </div>
+                    </div>
                     <div id="selectedDateTrimesterFocus" class="bg-fuchsia-50 border-l-4 border-fuchsia-500 text-fuchsia-700 p-6 rounded-md mb-6">
                         <h3 class="text-lg font-semibold text-fuchsia-800 mb-3">Trimester Focus & Tips for Monika</h3>
                         <ul id="selectedDateTrimesterFocusList" class="list-disc list-inside space-y-1 text-sm">
@@ -486,7 +498,7 @@
         const currentDateDisplay = document.getElementById('currentDateDisplay');
         const currentTrimesterDisplay = document.getElementById('currentTrimester');
         const currentPregnancyWeekDisplay = document.getElementById('currentPregnancyWeek');
-        const todaysMealsContainer = document.getElementById('todaysMeals');
+        const todaysMealsContentContainer = document.getElementById('todaysMealsContent'); // Corrected ID
         const trimesterFocusList = document.getElementById('trimesterFocusList');
         const planNotActiveMessage = document.getElementById('planNotActiveMessage');
         const todaysPlanSection = document.getElementById('todaysPlanSection');
@@ -501,7 +513,7 @@
         const selectedDateDisplay = document.getElementById('selectedDateDisplay');
         const selectedDateTrimesterDisplay = document.getElementById('selectedDateTrimester');
         const selectedDatePregnancyWeekDisplay = document.getElementById('selectedDatePregnancyWeek');
-        const selectedDateMealsContainer = document.getElementById('selectedDateMeals');
+        const selectedDateMealsContentContainer = document.getElementById('selectedDateMealsContent'); // Corrected ID
         const selectedDateTrimesterFocusList = document.getElementById('selectedDateTrimesterFocusList');
         const selectedDateDisplayInlineElements = document.querySelectorAll('.selectedDateDisplayInline');
 
@@ -512,47 +524,19 @@
         }
         
         function formatDateForInput(date) {
-            // Returns YYYY-MM-DD
+            // Returns yyyy-MM-dd
             const year = date.getFullYear();
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
-
-        function displayMeal(mealTime, mealDetails, containerElement) {
-            // Clear previous meals in the container before adding new ones
-            if (containerElement) { // Ensure containerElement is not null
-                 containerElement.innerHTML = ''; // Clear previous meals if any
-            } else {
-                console.error("Meal container not found for:", mealTime);
-                return; // Exit if container is not valid
-            }
-
-            const mealCard = document.createElement('div');
-            mealCard.className = 'meal-card';
-            // Check if mealDetails is an object (for structured meal times) or a string
-            if (typeof mealDetails === 'object' && mealDetails !== null) {
-                let content = '';
-                for (const key in mealDetails) {
-                    if (mealDetails.hasOwnProperty(key)) {
-                        // Convert camelCase key to Title Case for display
-                        const titleKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                        content += `<h3>${titleKey}</h3><p>${mealDetails[key] || 'No specific meal listed.'}</p>`;
-                    }
-                }
-                mealCard.innerHTML = content;
-            } else { // It's a single meal string
-                 mealCard.innerHTML = `<h3>${mealTime}</h3><p>${mealDetails || 'No specific meal listed.'}</p>`;
-            }
-            containerElement.appendChild(mealCard);
-        }
         
         function displayAllMealsForDay(mealData, containerElement) {
             if (!containerElement) {
-                console.error("Main meal container not found.");
+                console.error("Main meal container not found for displaying all meals.");
                 return;
             }
-            containerElement.innerHTML = ''; // Clear previous meals
+            containerElement.innerHTML = ''; // Clear previous meals in the specific content container
 
             if (mealData) {
                 displayMealCard('Early Morning', mealData.earlyMorning, containerElement);
@@ -590,7 +574,7 @@
         
         // --- Core Diet Plan Logic ---
         function getDietPlanDetails(dateToGetPlanFor, lmpConfig, trimestersConfig) {
-            const normalizedDate = new Date(dateToGetPlanFor); // Clone to avoid modifying original
+            const normalizedDate = new Date(dateToGetPlanFor); 
             normalizedDate.setHours(0, 0, 0, 0);
 
             let lmpYearForDate;
@@ -604,7 +588,6 @@
             const t2StartDate = (year) => new Date(year, trimestersConfig.T2.planStartMonth, trimestersConfig.T2.planStartDate);
             const t2EndDate = (year) => new Date(year, trimestersConfig.T2.planEndMonth, trimestersConfig.T2.planEndDate);
             const t3StartDate = (year) => new Date(year, trimestersConfig.T3.planStartMonth, trimestersConfig.T3.planStartDate);
-            // T3 ends in Jan of LMPYear + 1
             const t3EndDate = (year) => new Date(year + 1, trimestersConfig.T3.planEndMonth, trimestersConfig.T3.planEndDate);
 
             if (normalizedDate >= t1StartDate(currentFullYear) && normalizedDate <= t1EndDate(currentFullYear)) {
@@ -614,7 +597,6 @@
                 lmpYearForDate = currentFullYear;
                 activeTrimesterKey = 'T2';
             } else if (normalizedDate >= t3StartDate(currentFullYear) && normalizedDate <= t3EndDate(currentFullYear)) {
-                // This case handles T3 starting in currentFullYear and ending in currentFullYear + 1
                 lmpYearForDate = currentFullYear;
                 activeTrimesterKey = 'T3';
             } else if (normalizedDate.getFullYear() === currentFullYear && normalizedDate >= t3StartDate(currentFullYear - 1) && normalizedDate <= t3EndDate(currentFullYear - 1) ) {
@@ -712,7 +694,7 @@
                 currentTrimesterDisplay.textContent = todaysPlan.trimesterName;
                 currentPregnancyWeekDisplay.textContent = todaysPlan.pregnancyWeekText;
                 
-                displayAllMealsForDay(todaysPlan.mealData, todaysMealsContainer);
+                displayAllMealsForDay(todaysPlan.mealData, todaysMealsContentContainer); // Use corrected container
                 populateTrimesterFocus(todaysPlan.focusPoints, trimesterFocusList);
 
                 const lmpYearForDatePicker = todaysPlan.lmpYearForDate || today.getFullYear();
@@ -725,8 +707,8 @@
                 todaysPlanSection.style.display = 'none';
                 currentTrimesterDisplay.textContent = "N/A";
                 currentPregnancyWeekDisplay.textContent = "N/A";
-                todaysMealsContainer.innerHTML = `<p class="text-gray-600 p-4 text-center">${todaysPlan.errorMessage || 'No daily meal plan active for today.'}</p>`;
-                trimesterFocusList.innerHTML = '<li>General pregnancy nutrition advice applies. Consult your doctor.</li>';
+                if(todaysMealsContentContainer) todaysMealsContentContainer.innerHTML = `<p class="text-gray-600 p-4 text-center">${todaysPlan.errorMessage || 'No daily meal plan active for today.'}</p>`; // Use corrected container
+                if(trimesterFocusList) trimesterFocusList.innerHTML = '<li>General pregnancy nutrition advice applies. Consult your doctor.</li>';
 
                 const fallbackLmpYear = today.getFullYear();
                 dateInputElement.min = formatDateForInput(new Date(fallbackLmpYear, trimestersConfig.T1.planStartMonth, trimestersConfig.T1.planStartDate));
@@ -763,7 +745,7 @@
                     selectedDateTrimesterDisplay.textContent = planForSelectedDate.trimesterName;
                     selectedDatePregnancyWeekDisplay.textContent = planForSelectedDate.pregnancyWeekText;
                     
-                    displayAllMealsForDay(planForSelectedDate.mealData, selectedDateMealsContainer);
+                    displayAllMealsForDay(planForSelectedDate.mealData, selectedDateMealsContentContainer); // Use corrected container
                     populateTrimesterFocus(planForSelectedDate.focusPoints, selectedDateTrimesterFocusList);
 
                 } else {

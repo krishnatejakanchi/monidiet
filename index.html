@@ -83,7 +83,6 @@
             border-radius: 0.375rem; /* Tailwind rounded-md */
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Tailwind shadow-sm */
             line-height: 1.5; /* Ensure text is vertically centered */
-            /* Ensure it takes text color from Tailwind */
             color: currentColor; 
         }
         input[type="date"]:focus {
@@ -91,14 +90,22 @@
             border-color: #667eea; /* Tailwind indigo-500 or similar */
             box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.4); /* Tailwind indigo-300 with opacity */
         }
-         /* Style for the date input placeholder text if browser supports it */
-        input[type="date"]::-webkit-datetime-edit-fields-wrapper { 
-            /* padding: 0.4rem 0;  Adjust as needed */
-        }
         input[type="date"]::-webkit-calendar-picker-indicator {
             opacity: 1;
             cursor: pointer;
-            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg); /* Example to color it a bit */
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg); 
+        }
+        .shortcut-button {
+            background-color: #667eea; /* Tailwind indigo-500 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .shortcut-button:hover {
+            background-color: #5a67d8; /* Tailwind indigo-600 */
         }
 
     </style>
@@ -112,7 +119,7 @@
 
         <div id="planNotActiveMessage" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert" style="display: none;">
             <p class="font-bold">Diet Plan Information for Monika Today</p>
-            <p>The detailed daily diet plan is designed for the period from June 1st to January 23rd, based on an LMP of April 23rd. If today's date falls outside this specific window, please refer to the general nutritional information and tips provided, or consult your healthcare provider.</p>
+            <p>The detailed daily diet plan is designed for the period from May 29th to January 23rd, based on an LMP of April 23rd. If today's date falls outside this specific window, please refer to the general nutritional information and tips provided, or consult your healthcare provider.</p>
         </div>
 
         <div id="todaysPlanSection">
@@ -122,14 +129,16 @@
                 <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="currentPregnancyWeek"></span></p>
             </div>
 
-            <div class="mb-6"> <h2 class="text-2xl font-semibold text-teal-700 mb-4">Monika's Meal Plan for Today</h2>
-                <div id="todaysMealsContent"> </div>
+            <div class="mb-6"> 
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Monika's Meal Plan for Today</h2>
+                <div id="todaysMealsContent"> 
+                </div>
             </div>
 
             <div id="trimesterFocus" class="bg-indigo-50 border-l-4 border-indigo-500 text-indigo-700 p-6 rounded-md mb-6">
                 <h2 class="text-xl font-semibold text-indigo-800 mb-3">Trimester Focus & Tips for Monika (Today)</h2>
                 <ul id="trimesterFocusList" class="list-disc list-inside space-y-1 text-sm">
-                    </ul>
+                </ul>
             </div>
         </div>
 
@@ -137,29 +146,33 @@
             <h2 class="text-2xl font-semibold text-purple-700 mb-4 text-center md:text-left">View Plan for Monika on a Specific Date</h2>
             <div class="flex flex-col sm:flex-row gap-3 mb-6 items-stretch sm:items-center">
                 <input type="date" id="dateInput" class="w-full h-12 text-gray-700 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:flex-1">
-                <button id="viewPlanButton" class="info-button bg-purple-500 hover:bg-purple-600 w-full sm:w-auto h-12 flex items-center justify-center whitespace-nowrap">View Plan</button>
+                 </div>
+            <div class="mb-6 text-center md:text-left">
+                <button id="viewTomorrowButton" class="shortcut-button w-full sm:w-auto h-12 flex items-center justify-center">📅 View Tomorrow's Plan</button>
             </div>
+
             <div id="selectedDatePlanSection" class="mt-4" style="display: none;">
                 <div id="selectedDatePlanMessage" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert" style="display: none;">
-                    </div>
+                </div>
                 <div id="selectedDatePlanDetails">
                     <div class="bg-white shadow-md rounded-lg p-6 mb-6">
                         <h3 class="text-xl font-semibold text-purple-700 mb-1">Overview for Monika on <span id="selectedDateDisplay"></span></h3>
                         <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="selectedDateTrimester"></span></p>
                         <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="selectedDatePregnancyWeek"></span></p>
                     </div>
-                    <div class="mb-6"> <h3 class="text-xl font-semibold text-purple-700 mb-4">Meal Plan for Monika on <span class="selectedDateDisplayInline"></span></h3>
-                        <div id="selectedDateMealsContent"> </div>
+                    <div class="mb-6"> 
+                        <h3 class="text-xl font-semibold text-purple-700 mb-4">Meal Plan for Monika on <span class="selectedDateDisplayInline"></span></h3>
+                        <div id="selectedDateMealsContent"> 
+                        </div>
                     </div>
                     <div id="selectedDateTrimesterFocus" class="bg-fuchsia-50 border-l-4 border-fuchsia-500 text-fuchsia-700 p-6 rounded-md mb-6">
                         <h3 class="text-lg font-semibold text-fuchsia-800 mb-3">Trimester Focus & Tips for Monika</h3>
                         <ul id="selectedDateTrimesterFocusList" class="list-disc list-inside space-y-1 text-sm">
-                            </ul>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 mt-10">
             <button id="foodSafetyBtn" class="info-button w-full">Food Safety Guidelines</button>
@@ -212,8 +225,8 @@
             trimesters: {
                 T1: {
                     name: "First Trimester",
-                    planStartMonth: 5, // June (0-indexed)
-                    planStartDate: 1,
+                    planStartMonth: 4, // May (0-indexed) - Updated Start Date
+                    planStartDate: 29,    // Updated Start Date
                     planEndMonth: 6,   // July
                     planEndDate: 22,
                     focus: [
@@ -223,8 +236,8 @@
                         "Hydration: Essential, especially if experiencing vomiting. Sip fluids throughout the day.",
                         "Iron: Begin building iron stores. Include green leafy vegetables, ragi, dates, and legumes."
                     ],
-                    days: [
-                        { // Day 1 (T1)
+                    days: [ // 7-day rotation. Day 1 is Thursday (May 29th), Day 4 is Sunday.
+                        { // Day 1 (Thursday)
                             earlyMorning: "1 glass warm water with lemon juice. After 15-20 mins: 5-6 soaked almonds + 2 walnuts.",
                             breakfast: "2 soft Pesarattu (Moong Dal Dosa) with 2 tsp Allam (Ginger) chutney.",
                             midMorningSnack: "1 medium Guava OR 1 small bowl Pomegranate.",
@@ -233,7 +246,7 @@
                             dinner: "1.5 bowls of Vegetable Khichdi with 1/2 small bowl of curd.",
                             bedtime: "Optional: 1 glass (150ml) warm milk."
                         },
-                        { // Day 2 (T1)
+                        { // Day 2 (Friday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: Handful of mixed nuts (almonds, cashews).",
                             breakfast: "1 large bowl of Vegetable Upma (with carrots, peas, beans) with 1/2 small bowl of curd.",
                             midMorningSnack: "1 medium Apple OR 1 Orange.",
@@ -242,25 +255,25 @@
                             dinner: "1.5 bowls of Rice, 1 small bowl of Sorakaya (Bottle Gourd) Curry, 1/2 small bowl of mixed dal.",
                             bedtime: "Optional: 1 glass (150ml) warm milk with a pinch of turmeric."
                         },
-                        { // Day 3 (T1)
+                        { // Day 3 (Saturday)
                             earlyMorning: "1 glass warm water with a few drops of ginger juice (if nausea). After 15-20 mins: 2-3 Dates.",
                             breakfast: "2 Plain Dosa with 1 small bowl of vegetable sambar and 2 tsp coconut chutney.",
-                            midMorningSnack: "1 small bowl mixed fruits (e.g., papaya - ripe, banana).",
+                            midMorningSnack: "1 small bowl mixed fruits (e.g., banana, apple slices).", 
                             lunch: "1.5 bowls of Rice, 1 small bowl of Gongura Pappu (Sorrel Leaves Dal - in moderation), 1 small bowl of Dondakaya (Ivy Gourd) Vepudu (minimal oil), 1/2 small bowl of Curd.",
                             eveningSnack: "1 handful Roasted Peanuts (unsalted) OR 1 glass Ragi Malt (unsweetened or lightly sweetened with jaggery).",
                             dinner: "1 large bowl of Vegetable Pulao (with rice, peas, carrots, beans) with 1 small bowl of plain curd or vegetable raita.",
                             bedtime: "Optional: 1 glass (150ml) warm milk."
                         },
-                        { // Day 4 (T1)
+                        { // Day 4 (Sunday - Special/Non-Veg Lunch)
                             earlyMorning: "1 glass warm water. After 15-20 mins: 5-6 soaked almonds.",
                             breakfast: "1 Boiled Egg (well-cooked) and 2 slices whole wheat toast OR 1 bowl of Oats Porridge with milk and chopped fruit/nuts.",
-                            midMorningSnack: "1 medium Pear OR 1 small bowl Grapes.",
-                            lunch: "1.5 bowls of Rice, 1 small bowl of Mamidikaya Pappu (Raw Mango Dal - seasonal, tangy, good for nausea), 1 small bowl of Carrot-Beans Poriyal (stir-fry), 1/2 small bowl of Curd.",
+                            midMorningSnack: "1 medium Sapota (Chikoo) OR 1 small bowl Grapes.", 
+                            lunch: "1.5 bowls of Rice, 1 small bowl of Chicken Curry (well-cooked, mildly spiced) OR Fish Pulusu (low-mercury fish, well-cooked), 1 small bowl of Vegetable Stir-fry (e.g., beans, carrot), 1/2 small bowl of Curd.", 
                             eveningSnack: "1 small Sweet Potato (boiled/steamed) chaat OR 1 glass Lemonade (fresh, not too sugary).",
                             dinner: "1.5 bowls of Rice, 1 small bowl of Mixed Vegetable Curry, 1/2 small bowl of curd.",
                             bedtime: "Optional: 1 glass (150ml) warm milk with a pinch of cardamom."
                         },
-                        { // Day 5 (T1)
+                        { // Day 5 (Monday)
                             earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 2 walnuts + 1 fig (soaked).",
                             breakfast: "3 Dibba Rotti (thick rice pancake, small pieces) with 2 tsp palli (groundnut) chutney OR 1 bowl of Semiya (Vermicelli) Upma with vegetables.",
                             midMorningSnack: "1 medium Sapota (Chikoo) OR 1 small bowl Watermelon.",
@@ -269,7 +282,7 @@
                             dinner: "1.5 bowls of Bisi Bele Bath (lentil-rice dish with vegetables) with 1/2 small bowl of raita.",
                             bedtime: "Optional: 1 glass (150ml) warm milk."
                         },
-                        { // Day 6 (T1)
+                        { // Day 6 (Tuesday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: Handful of raisins (soaked).",
                             breakfast: "2 Ragi Dosa (Finger Millet Dosa) with 1 small bowl of tomato-onion chutney.",
                             midMorningSnack: "1 medium Banana.",
@@ -278,7 +291,7 @@
                             dinner: "1.5 bowls of Rice, 1 bowl of Egg Curry (2 eggs, well-cooked) OR 1 bowl of Paneer Butter Masala (homemade, less cream/butter, more tomato gravy), 1/2 small bowl of green beans curry.",
                             bedtime: "Optional: 1 glass (150ml) warm milk with a pinch of saffron (optional)."
                         },
-                        { // Day 7 (T1)
+                        { // Day 7 (Wednesday)
                             earlyMorning: "1 glass warm water with honey & lemon. After 15-20 mins: 4-5 cashews.",
                             breakfast: "1 large bowl of Pongal (rice and lentil preparation, savory) with 1/2 small bowl of gothsu (brinjal curry) or coconut chutney.",
                             midMorningSnack: "1 small bowl Muskmelon OR 1 Orange.",
@@ -289,11 +302,11 @@
                         }
                     ]
                 },
-                T2: {
+                T2: { 
                     name: "Second Trimester",
-                    planStartMonth: 6, // July
+                    planStartMonth: 6, 
                     planStartDate: 23,
-                    planEndMonth: 9,   // October
+                    planEndMonth: 9,   
                     planEndDate: 28,
                     focus: [
                         "Increased Calories: An additional ~350 kcal per day is needed. Focus on nutrient-dense foods.",
@@ -302,8 +315,8 @@
                         "Calcium: Continue focusing on calcium-rich foods like dairy, ragi, sesame seeds.",
                         "DHA: Important for brain and eye development. Include fatty fish (low mercury), walnuts, flaxseeds."
                     ],
-                    days: [
-                        { // Day 1 (T2)
+                    days: [ // Day 4 is Sunday
+                        { // Day 1 (Thursday)
                             earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 6-8 soaked almonds + 2-3 walnuts.",
                             breakfast: "2-3 soft Pesarattu with 2 tsp Allam chutney + 1 boiled egg (well-cooked).",
                             midMorningSnack: "1 medium Apple + 1 small bowl of Curd (100g).",
@@ -312,7 +325,7 @@
                             dinner: "2 bowls of Rice, 100g grilled/baked Fish (low mercury, well-cooked) OR 1.5 bowls of mixed vegetable kurma.",
                             bedtime: "Optional: 1 glass (200ml) warm milk."
                         },
-                        { // Day 2 (T2)
+                        { // Day 2 (Friday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: Handful of mixed nuts and seeds (almonds, walnuts, pumpkin seeds).",
                             breakfast: "1.5 large bowls of Vegetable Upma (with extra vegetables and 1 tbsp roasted peanuts) with 1 bowl of curd.",
                             midMorningSnack: "1 Orange + 1 small glass Milk (150ml).",
@@ -321,34 +334,34 @@
                             dinner: "2 bowls of Rice, 100g Chicken curry (well-cooked, lean) OR 1.5 bowls of Sorakaya (Bottle Gourd) Curry with Chana Dal, 1/2 bowl of mixed dal.",
                             bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of turmeric."
                         },
-                        { // Day 3 (T2)
+                        { // Day 3 (Saturday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: 3-4 Dates + 4-5 almonds.",
                             breakfast: "2-3 Plain Dosa with 1.5 bowls of vegetable sambar and 2 tsp coconut chutney + 1 glass (200ml) milk.",
-                            midMorningSnack: "1 small bowl mixed fruits (e.g., grapes, apple slices).",
+                            midMorningSnack: "1 small bowl mixed fruits (e.g., grapes, apple slices, banana).", 
                             lunch: "2 bowls of Rice, 1.5 bowls of Gongura Pappu (in moderation) OR Moong Dal with spinach, 1 bowl of Dondakaya (Ivy Gourd) Coconut Fry, 1 bowl of Curd.",
                             eveningSnack: "1 handful Roasted Chana (chickpeas) OR 1 glass Ragi Malt with 1 tsp jaggery + 1 small fruit.",
                             dinner: "1.5 large bowls of Vegetable Pulao (with extra vegetables and paneer cubes/peas) with 1.5 bowls of plain curd or vegetable raita.",
                             bedtime: "Optional: 1 glass (200ml) warm milk."
                         },
-                        { // Day 4 (T2)
+                        { // Day 4 (Sunday - Special/Non-Veg Lunch)
                             earlyMorning: "1 glass warm water. After 15-20 mins: 6-8 soaked almonds + 1 dried fig.",
                             breakfast: "2 Boiled Eggs (well-cooked) and 2 slices whole wheat toast with avocado/butter OR 1.5 bowls of Oats Porridge with milk, chopped fruits, nuts, and seeds.",
                             midMorningSnack: "1 medium Pomegranate.",
-                            lunch: "2 bowls of Rice, 1.5 bowls of Mamidikaya Pappu (seasonal) OR Lemon Dal, 1 bowl of Carrot-Beans-Peas Poriyal, 1 bowl of Curd.",
+                            lunch: "2 bowls of Rice, 1.5 bowls of Chicken Biryani (homemade, mildly spiced with vegetables) OR Fish Fry (low-mercury fish, shallow fried, well-cooked) with a side of vegetable curry, 1 bowl of Raita.", 
                             eveningSnack: "1 large Sweet Potato (boiled/steamed) chaat with lemon and chaat masala OR 1 Paneer Tikka skewer (homemade, baked/grilled).",
                             dinner: "2 bowls of Rice, 1.5 bowls of Tomato Dal (Pappu), 1 bowl of Brinjal Fry (Vankaya Vepudu, minimal oil).",
                             bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of cardamom."
                         },
-                        { // Day 5 (T2)
+                        { // Day 5 (Monday)
                             earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 2-3 walnuts + 5-6 pistachios.",
                             breakfast: "1.5 bowls of Semiya (Vermicelli) Upma with plenty of vegetables and peanuts + 1 glass (200ml) buttermilk.",
                             midMorningSnack: "1 medium Guava + 1 small bowl sprouts.",
                             lunch: "2 bowls of Rice, 1.5 bowls of Mixed Vegetable Sambar (with extra lentils and vegetables like drumstick, pumpkin, ash gourd), 1 bowl of Thotakura (Amaranth Leaves) Garlic Fry, 1 bowl of Curd.",
-                            eveningSnack: "1.5 bowls of Sundal (boiled black chickpeas/rajma) OR Fruit salad with a sprinkle of nuts.", // Fruit salad kept as it's not a "leafy" salad
+                            eveningSnack: "1.5 bowls of Sundal (boiled black chickpeas/rajma) OR Fruit salad (e.g., apple, banana, grapes) with a sprinkle of nuts.", 
                             dinner: "2 bowls of Bisi Bele Bath (with extra vegetables and 1 tsp ghee) with 1 bowl of cucumber raita.",
                             bedtime: "Optional: 1 glass (200ml) warm milk."
                         },
-                        { // Day 6 (T2)
+                        { // Day 6 (Tuesday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: Handful of soaked raisins and 2-3 cashews.",
                             breakfast: "2-3 Ragi Dosa with 1.5 bowls of tomato-onion chutney and 1/2 bowl of sambar.",
                             midMorningSnack: "1 medium Banana + 1 handful groundnuts.",
@@ -357,7 +370,7 @@
                             dinner: "2 bowls of Rice, 1.5 bowls of Egg Bhurji (2-3 eggs) OR 1.5 bowls of Paneer Bhurji (scrambled Indian cheese with spices and vegetables), 1 bowl of green peas curry.",
                             bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of saffron."
                         },
-                        { // Day 7 (T2)
+                        { // Day 7 (Wednesday)
                             earlyMorning: "1 glass warm water with honey & lemon. After 15-20 mins: 5-6 almonds + 1 date.",
                             breakfast: "1.5 large bowls of Pongal (with extra moong dal and 1 tsp ghee) with 1 bowl of gothsu or coconut chutney + 1 small fruit.",
                             midMorningSnack: "1 small bowl Muskmelon chunks + 1/2 bowl of curd.",
@@ -368,11 +381,11 @@
                         }
                     ]
                 },
-                T3: {
+                T3: { 
                     name: "Third Trimester",
-                    planStartMonth: 9, // October
+                    planStartMonth: 9, 
                     planStartDate: 29,
-                    planEndMonth: 0,   // January (next year)
+                    planEndMonth: 0,   
                     planEndDate: 23,
                     focus: [
                         "Continued Caloric Needs: Maintain the additional ~350 kcal per day.",
@@ -381,26 +394,26 @@
                         "DHA: Essential for continued brain maturation.",
                         "Fibre & Fluids: Help manage constipation and prepare for labor."
                     ],
-                    days: [
-                        { // Day 1 (T3)
+                    days: [ // Day 4 is Sunday
+                        { // Day 1 (Thursday)
                             earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 8-10 soaked almonds + 3-4 walnuts.",
                             breakfast: "2-3 soft Pesarattu with 1/2 bowl of Chana Masala (chickpea curry) OR mint chutney.",
                             midMorningSnack: "1 medium Apple + 1 small bowl Greek Yogurt/Hung Curd (150g).",
                             lunch: "2 bowls of Rice, 1.5 bowls of Fish Curry (low mercury, e.g., sardines/pomfret, 100-120g fish) OR 1.5 bowls of Chicken Curry (100-120g chicken), 1 bowl of Palakura (Spinach) stir-fry with garlic, 1 bowl of Curd. (Vegetarian: 1.5 bowls of Rajma/Chole curry instead of fish/chicken).",
-                            eveningSnack: "1 glass Milkshake (banana/mango with milk and nuts, no added sugar) OR 1 bowl Mixed Sprouts and Corn Salad.", // Corn salad is not a leafy salad.
+                            eveningSnack: "1 glass Milkshake (banana/mango with milk and nuts, no added sugar) OR 1 bowl Mixed Sprouts and Corn Salad.", 
                             dinner: "1.5 bowls of Rice, 1.5 bowls of Dal Palak (lentils with spinach), 1 bowl of carrot-peas curry.",
                             bedtime: "Optional: 1 glass (200ml) warm milk with nuts powder."
                         },
-                        { // Day 2 (T3)
+                        { // Day 2 (Friday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: Handful of mixed nuts and seeds (include flaxseeds).",
                             breakfast: "2 Moong Dal Cheela (lentil pancakes) stuffed with grated paneer/vegetables, with mint chutney + 1 glass milk.",
                             midMorningSnack: "1 Orange + 1 handful roasted peanuts.",
-                            lunch: "2 bowls of Rice, 1.5 bowls of Dal Makhani (homemade, less butter/cream) OR 1.5 bowls of Soya Chunks Curry, 1 bowl of Bendakaya (Okra) Masala, 1 bowl of cucumber-tomato-onion raita.", // Raita is not a leafy salad.
-                            eveningSnack: "1 glass Coconut Water + 1 bowl Fruit Chaat (apple, pear, pomegranate).", // Fruit chaat kept.
+                            lunch: "2 bowls of Rice, 1.5 bowls of Dal Makhani (homemade, less butter/cream) OR 1.5 bowls of Soya Chunks Curry, 1 bowl of Bendakaya (Okra) Masala, 1 bowl of cucumber-tomato-onion raita.", 
+                            eveningSnack: "1 glass Coconut Water + 1 bowl Fruit Chaat (apple, banana, pomegranate).", 
                             dinner: "1.5 bowls of Rice, 1.5 bowls of Egg Curry (2-3 eggs, well-cooked) OR 1.5 bowls of Mutter Paneer (peas and cottage cheese curry), 1 bowl of Thotakura (Amaranth) stir-fry.",
                             bedtime: "Optional: 1 glass (200ml) warm milk with turmeric and black pepper."
                         },
-                        { // Day 3 (T3)
+                        { // Day 3 (Saturday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: 4-5 Dates + 5-6 almonds.",
                             breakfast: "2-3 Mixed Dal Dosa (adai) with 1 bowl of avial (mixed vegetables in coconut gravy) OR 2 slices whole wheat bread with 2 scrambled eggs and spinach.",
                             midMorningSnack: "1 small bowl mixed berries (if available) OR 1 Guava + 1/2 bowl of curd.",
@@ -409,25 +422,25 @@
                             dinner: "1.5 large bowls of Vegetable Biryani (with plenty of vegetables, paneer/soya chunks, and basmati rice) with 1.5 bowls of mixed vegetable raita.",
                             bedtime: "Optional: 1 glass (200ml) warm milk."
                         },
-                        { // Day 4 (T3)
+                        { // Day 4 (Sunday - Special/Non-Veg Lunch)
                             earlyMorning: "1 glass warm water. After 15-20 mins: 6-8 soaked almonds + 2 dried apricots.",
                             breakfast: "2 Vegetable Uthappam with 1.5 bowls of sambar + 1 glass (200ml) buttermilk.",
                             midMorningSnack: "1 medium Pomegranate + 1 handful walnuts.",
-                            lunch: "2 bowls of Rice, 100g baked/grilled Fish (low mercury) OR 100g Tofu stir-fry, 1.5 bowls of Pappu Charu (lentil and tamarind stew), 1 bowl of Munakkaya (Drumstick) Tomato Curry, 1 bowl of Curd.",
+                            lunch: "2 bowls of Rice, 120g Fish Pulusu (low-mercury fish, well-cooked, flavorful gravy) OR Chicken Roast (well-cooked, mildly spiced), 1 bowl of Mixed Vegetable Curry (e.g., beans, carrot, potato), 1 bowl of Curd.", 
                             eveningSnack: "1 large Sweet Potato, boiled and mashed with a pinch of jaggery OR 1 bowl Makhana (fox nuts) and peanut mix.",
                             dinner: "1.5 bowls of Rice, 1.5 bowls of Methi Chicken (fenugreek chicken, well-cooked) OR 1.5 bowls of Methi Dal (fenugreek lentils), 1 bowl of Aloo Gobi (potato cauliflower, less potato).",
                             bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of cardamom."
                         },
-                        { // Day 5 (T3)
+                        { // Day 5 (Monday)
                             earlyMorning: "1 glass warm water with lemon. After 15-20 mins: 2-3 walnuts + 1 tbsp mixed seeds (pumpkin, sunflower).",
                             breakfast: "1.5 bowls of Oats with milk, loaded with fruits, nuts, and seeds OR 2 Pesarattu with onion-ginger topping and Allam chutney.",
-                            midMorningSnack: "1 medium Pear + 1 small glass Lassi.",
+                            midMorningSnack: "1 medium Sapota (Chikoo) OR 1 small bowl Grapes.", 
                             lunch: "2 bowls of Lemon Rice (with peanuts and curry leaves), 1.5 bowls of Mixed Vegetable Kootu (lentil and vegetable stew), 1 bowl of Cabbage Pachadi (cabbage relish), 1 bowl of Curd.",
                             eveningSnack: "1 bowl Sundal (different legume, e.g., black-eyed peas) OR 1 whole wheat toast with peanut butter and banana slices.",
                             dinner: "2 bowls of Ven Pongal (savory rice-lentil dish with ghee) with 1.5 bowls of sambar.",
                             bedtime: "Optional: 1 glass (200ml) warm milk."
                         },
-                        { // Day 6 (T3)
+                        { // Day 6 (Tuesday)
                             earlyMorning: "1 glass warm water. After 15-20 mins: Handful of soaked black raisins and 2-3 cashews.",
                             breakfast: "2-3 Ragi Idlis with 1.5 bowls of vegetable sambar and tomato chutney + 1 boiled egg.",
                             midMorningSnack: "1 medium Banana + 1 small bowl yogurt with flaxseed powder.",
@@ -436,7 +449,7 @@
                             dinner: "1.5 bowls of Rice, 1.5 bowls of Fish Pulusu (low mercury, 100-120g fish) OR 1.5 bowls of Dal Palak (lentils with spinach), 1 bowl of Bendakaya Pulusu (okra tamarind stew).",
                             bedtime: "Optional: 1 glass (200ml) warm milk with a pinch of saffron."
                         },
-                        { // Day 7 (T3)
+                        { // Day 7 (Wednesday)
                             earlyMorning: "1 glass warm water with honey & lemon. After 15-20 mins: 5-6 almonds + 1-2 Brazil nuts (for selenium, if available).",
                             breakfast: "1.5 large bowls of Khara Bath (savory semolina with vegetables and spices) with 1/2 bowl of coconut chutney + 1 small fruit.",
                             midMorningSnack: "1 small bowl Grapes + 1 handful mixed seeds.",
@@ -506,7 +519,7 @@
 
         // Date Picker Elements
         const dateInputElement = document.getElementById('dateInput');
-        const viewPlanButton = document.getElementById('viewPlanButton');
+        const viewTomorrowButton = document.getElementById('viewTomorrowButton'); // New button
         const selectedDatePlanSection = document.getElementById('selectedDatePlanSection');
         const selectedDatePlanMessage = document.getElementById('selectedDatePlanMessage');
         const selectedDatePlanDetails = document.getElementById('selectedDatePlanDetails');
@@ -611,11 +624,11 @@
             const activeTrimesterDetails = trimestersConfig[activeTrimesterKey];
             const lmpReferenceDate = new Date(lmpYearForDate, lmpConfig.month, lmpConfig.day, 0, 0, 0, 0);
             
-            const overallPlanStartDate = t1StartDate(lmpYearForDate);
+            const overallPlanStartDate = t1StartDate(lmpYearForDate); 
             const overallPlanEndDate = t3EndDate(lmpYearForDate); 
 
             if (normalizedDate < overallPlanStartDate || normalizedDate > overallPlanEndDate) {
-                 return { planActive: false, errorMessage: "The selected date is outside the overall diet plan window (June 1st - Jan 23rd for the relevant pregnancy)." };
+                 return { planActive: false, errorMessage: "The selected date is outside the overall diet plan window (May 29th - Jan 23rd for the relevant pregnancy)." };
             }
 
             const pregnancyDays = Math.max(0, Math.floor((normalizedDate - lmpReferenceDate) / (1000 * 60 * 60 * 24)));
@@ -623,7 +636,7 @@
             const pregnancyWeekText = `${pregnancyWeek} (Day ${pregnancyDays + 1} of pregnancy)`;
 
             let cycleStartDateForTrimester;
-            if (activeTrimesterKey === 'T1') cycleStartDateForTrimester = t1StartDate(lmpYearForDate);
+            if (activeTrimesterKey === 'T1') cycleStartDateForTrimester = t1StartDate(lmpYearForDate); 
             else if (activeTrimesterKey === 'T2') cycleStartDateForTrimester = t2StartDate(lmpYearForDate);
             else if (activeTrimesterKey === 'T3') cycleStartDateForTrimester = t3StartDate(lmpYearForDate);
             else { 
@@ -656,6 +669,34 @@
                 errorMessage: null,
                 lmpYearForDate: lmpYearForDate 
             };
+        }
+
+        function displayPlanForSelectedDate(dateObject) {
+            const lmpConfig = { day: allDietData.lmpDay, month: allDietData.lmpMonth };
+            const trimestersConfig = allDietData.trimesters;
+            const planForSelectedDate = getDietPlanDetails(dateObject, lmpConfig, trimestersConfig);
+            
+            selectedDatePlanSection.style.display = 'block';
+
+            if (planForSelectedDate.planActive) {
+                selectedDatePlanMessage.style.display = 'none';
+                selectedDatePlanDetails.style.display = 'block';
+
+                const formattedSelectedDate = formatDate(dateObject);
+                selectedDateDisplay.textContent = formattedSelectedDate;
+                selectedDateDisplayInlineElements.forEach(el => el.textContent = formattedSelectedDate);
+                
+                selectedDateTrimesterDisplay.textContent = planForSelectedDate.trimesterName;
+                selectedDatePregnancyWeekDisplay.textContent = planForSelectedDate.pregnancyWeekText;
+                
+                displayAllMealsForDay(planForSelectedDate.mealData, selectedDateMealsContentContainer); 
+                populateTrimesterFocus(planForSelectedDate.focusPoints, selectedDateTrimesterFocusList);
+
+            } else {
+                selectedDatePlanDetails.style.display = 'none';
+                selectedDatePlanMessage.textContent = planForSelectedDate.errorMessage || "No diet plan available for the selected date.";
+                selectedDatePlanMessage.style.display = 'block';
+            }
         }
 
 
@@ -715,10 +756,10 @@
             }
 
 
-            // Event Listener for View Plan Button
-            viewPlanButton.addEventListener('click', () => {
+            // Event Listener for Date Input Change (Automatic Update)
+            dateInputElement.addEventListener('change', () => {
                 const selectedDateValue = dateInputElement.value;
-                if (!selectedDateValue) {
+                if (!selectedDateValue) { // Should not happen with native date picker if a value is selected
                     selectedDatePlanMessage.textContent = "Please select a date.";
                     selectedDatePlanMessage.style.display = 'block';
                     selectedDatePlanDetails.style.display = 'none';
@@ -729,30 +770,21 @@
                 const parts = selectedDateValue.split('-');
                 const selectedDateObj = new Date(parts[0], parts[1] - 1, parts[2]); 
                 selectedDateObj.setHours(0,0,0,0);
-
-                const planForSelectedDate = getDietPlanDetails(selectedDateObj, lmpConfig, trimestersConfig);
-                selectedDatePlanSection.style.display = 'block';
-
-                if (planForSelectedDate.planActive) {
-                    selectedDatePlanMessage.style.display = 'none';
-                    selectedDatePlanDetails.style.display = 'block';
-
-                    const formattedSelectedDate = formatDate(selectedDateObj);
-                    selectedDateDisplay.textContent = formattedSelectedDate;
-                    selectedDateDisplayInlineElements.forEach(el => el.textContent = formattedSelectedDate);
-                    
-                    selectedDateTrimesterDisplay.textContent = planForSelectedDate.trimesterName;
-                    selectedDatePregnancyWeekDisplay.textContent = planForSelectedDate.pregnancyWeekText;
-                    
-                    displayAllMealsForDay(planForSelectedDate.mealData, selectedDateMealsContentContainer); 
-                    populateTrimesterFocus(planForSelectedDate.focusPoints, selectedDateTrimesterFocusList);
-
-                } else {
-                    selectedDatePlanDetails.style.display = 'none';
-                    selectedDatePlanMessage.textContent = planForSelectedDate.errorMessage || "No diet plan available for the selected date.";
-                    selectedDatePlanMessage.style.display = 'block';
-                }
+                displayPlanForSelectedDate(selectedDateObj);
             });
+
+            // Event Listener for "View Tomorrow's Plan" Button
+            viewTomorrowButton.addEventListener('click', () => {
+                const tomorrow = new Date(today); // Start with today
+                tomorrow.setDate(today.getDate() + 1); // Increment to tomorrow
+                tomorrow.setHours(0,0,0,0); 
+                
+                // Set the date picker to tomorrow's date
+                dateInputElement.value = formatDateForInput(tomorrow);
+                // Display the plan for tomorrow
+                displayPlanForSelectedDate(tomorrow);
+            });
+
 
             // Populate Modals
             const foodsToAvoidContent = document.getElementById('foodsToAvoidContent');

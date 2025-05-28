@@ -109,12 +109,24 @@
         .shortcut-button:hover {
             background-color: #5a67d8; 
         }
-        .overview-extra-info p {
+        .overview-extra-info p, .overview-extra-info div { 
             margin-bottom: 0.5rem; 
             font-size: 0.9rem; 
         }
         .overview-extra-info strong {
             color: #5a67d8; 
+        }
+        .baby-size-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* Increased gap slightly */
+        }
+        .baby-size-image {
+            width: 48px; /* Slightly larger image */
+            height: 48px;
+            object-fit: contain; 
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            background-color: #e2e8f0; /* Tailwind gray-200 for placeholder background */
         }
 
     </style>
@@ -137,7 +149,11 @@
                 <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="currentTrimester"></span></p>
                 <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="currentPregnancyWeek"></span></p>
                 <div class="mt-3 overview-extra-info">
-                    <p><span class="font-medium">Baby's Size:</span> <span id="currentBabySize"></span></p>
+                    <div class="baby-size-container">
+                        <span class="font-medium">Baby's Size:</span> 
+                        <img id="currentBabyImage" src="https://placehold.co/48x48/e2e8f0/333?text=Fruit" alt="Baby size comparison" class="baby-size-image" onerror="this.onerror=null;this.src='https://placehold.co/48x48/e2e8f0/333?text=Img';">
+                        <span id="currentBabySizeText"></span>
+                    </div>
                     <p><span class="font-medium">Daily Fact:</span> <span id="currentDailyFact"></span></p>
                     <p><span class="font-medium">Daily Tip:</span> <span id="currentDailyTip"></span></p>
                 </div>
@@ -174,7 +190,11 @@
                         <p class="text-gray-700"><span class="font-medium">Trimester:</span> <span id="selectedDateTrimester"></span></p>
                         <p class="text-gray-700"><span class="font-medium">Pregnancy Week:</span> <span id="selectedDatePregnancyWeek"></span></p>
                         <div class="mt-3 overview-extra-info">
-                            <p><span class="font-medium">Baby's Size:</span> <span id="selectedDateBabySize"></span></p>
+                             <div class="baby-size-container">
+                                <span class="font-medium">Baby's Size:</span> 
+                                <img id="selectedDateBabyImage" src="https://placehold.co/48x48/e2e8f0/333?text=Fruit" alt="Baby size comparison" class="baby-size-image" onerror="this.onerror=null;this.src='https://placehold.co/48x48/e2e8f0/333?text=Img';">
+                                <span id="selectedDateBabySizeText"></span>
+                            </div>
                             <p><span class="font-medium">Daily Fact:</span> <span id="selectedDateDailyFact"></span></p>
                             <p><span class="font-medium">Daily Tip:</span> <span id="selectedDateDailyTip"></span></p>
                         </div>
@@ -242,16 +262,43 @@
             lmpDay: 23, 
             lmpMonth: 3, 
             babySizeComparisons: [ 
-                "a tiny poppy seed!", 
-                "a sesame seed!", "a lentil!", "a blueberry!", "a raspberry!", 
-                "a kidney bean!", "an olive!", "a grape!", "a lime!", 
-                "a pea pod!", "a lemon!", "an apple!", "an avocado!", 
-                "a turnip!", "a bell pepper!", "a sweet potato!", "an heirloom tomato!", 
-                "a pomegranate!", "a small cantaloupe!", "an ear of corn!", "a large banana!", 
-                "a rutabaga!", "an eggplant!", "a cauliflower head!", "a butternut squash!", 
-                "a cabbage head!", "a coconut!", "a jicama!", "a small pumpkin!", 
-                "a pineapple!", "a honeydew melon!", "a mini watermelon!", "a spaghetti squash!", 
-                "a bunch of Swiss chard!", "a small watermelon!", "a pumpkin!", "a watermelon!" 
+                { text: "a tiny poppy seed!", image: "https://placehold.co/48x48/A9A9A9/FFFFFF?text=PoppySeed" },
+                { text: "a sesame seed!", image: "https://placehold.co/48x48/D2B48C/FFFFFF?text=SesameSeed" },
+                { text: "a lentil!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Red_lentils.jpg/120px-Red_lentils.jpg" },
+                { text: "a blueberry!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Blueberries.jpg/120px-Blueberries.jpg" },
+                { text: "a raspberry!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Raspberries_and_leaves.jpg/120px-Raspberries_and_leaves.jpg" },
+                { text: "a kidney bean!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Red_kidney_beans.jpg/120px-Red_kidney_beans.jpg" },
+                { text: "an olive!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Olives2007.jpg/120px-Olives2007.jpg" },
+                { text: "a grape!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Table_grapes_on_white.jpg/120px-Table_grapes_on_white.jpg" },
+                { text: "a lime!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Lime_fruits.jpg/120px-Lime_fruits.jpg" },
+                { text: "a pea pod!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Pisum_sativum_pods.jpg/120px-Pisum_sativum_pods.jpg" },
+                { text: "a lemon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Lemon.jpg/120px-Lemon.jpg" },
+                { text: "an apple!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/120px-Red_Apple.jpg" },
+                { text: "an avocado!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Avocado_Hass_-_single_and_cut.jpg/120px-Avocado_Hass_-_single_and_cut.jpg" },
+                { text: "a turnip!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Turnip_2622027.jpg/120px-Turnip_2622027.jpg" },
+                { text: "a bell pepper!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Red_capsicum_and_cross_section.jpg/120px-Red_capsicum_and_cross_section.jpg" },
+                { text: "a sweet potato!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sweet_potato_presentation.jpg/120px-Sweet_potato_presentation.jpg" },
+                { text: "an heirloom tomato!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Bright_red_tomato_and_cross_section02.jpg/120px-Bright_red_tomato_and_cross_section02.jpg" },
+                { text: "a pomegranate!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Pomegranate_fruit_and_seeds.jpg/120px-Pomegranate_fruit_and_seeds.jpg" },
+                { text: "a small cantaloupe!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Cantaloupe.jpg/120px-Cantaloupe.jpg" },
+                { text: "an ear of corn!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Corncobs.jpg/120px-Corncobs.jpg" },
+                { text: "a large banana!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/120px-Banana-Single.jpg" },
+                { text: "a rutabaga!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Rutabaga_-_Brassica_napus_-_whole_and_cross_section.jpg/120px-Rutabaga_-_Brassica_napus_-_whole_and_cross_section.jpg" },
+                { text: "an eggplant!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Solanum_melongena_EN_01.JPG/120px-Solanum_melongena_EN_01.JPG" },
+                { text: "a cauliflower head!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cauliflower_detail.jpg/120px-Cauliflower_detail.jpg" },
+                { text: "a butternut squash!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Butternut_squash_whole_and_halved.jpg/120px-Butternut_squash_whole_and_halved.jpg" },
+                { text: "a cabbage head!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Cabbage_and_cross_section_on_white.jpg/120px-Cabbage_and_cross_section_on_white.jpg" },
+                { text: "a coconut!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Opened_coconut_with_coconut_water.jpg/120px-Opened_coconut_with_coconut_water.jpg" },
+                { text: "a jicama!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Jicama_cut.jpg/120px-Jicama_cut.jpg" },
+                { text: "a small pumpkin!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/JackbeLittle.jpg/120px-JackbeLittle.jpg" },
+                { text: "a pineapple!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Pineapple_And_A_Half.jpg/120px-Pineapple_And_A_Half.jpg" },
+                { text: "a honeydew melon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Honeydew_melon_whole_and_cut.jpg/120px-Honeydew_melon_whole_and_cut.jpg" },
+                { text: "a mini watermelon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Sugar_Baby_Watermelon.jpg/120px-Sugar_Baby_Watermelon.jpg" },
+                { text: "a spaghetti squash!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Spaghetti_squash_1.jpg/120px-Spaghetti_squash_1.jpg" },
+                { text: "a bunch of Swiss chard!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Swiss_Chard_NCBG.JPG/120px-Swiss_Chard_NCBG.JPG" },
+                { text: "a small watermelon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Sugar_Baby_Watermelon.jpg/120px-Sugar_Baby_Watermelon.jpg" },
+                { text: "a pumpkin!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/JackbeLittle.jpg/120px-JackbeLittle.jpg" },
+                { text: "a large watermelon!", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Watermelon_slice.jpg/120px-Watermelon_slice.jpg" } 
             ],
             dailyFacts: [
                 "Your baby's heart will begin to beat around week 6!",
@@ -576,7 +623,8 @@
         const currentDateDisplay = document.getElementById('currentDateDisplay');
         const currentTrimesterDisplay = document.getElementById('currentTrimester');
         const currentPregnancyWeekDisplay = document.getElementById('currentPregnancyWeek');
-        const currentBabySizeDisplay = document.getElementById('currentBabySize');
+        const currentBabySizeImage = document.getElementById('currentBabyImage');
+        const currentBabySizeText = document.getElementById('currentBabySizeText');
         const currentDailyFactDisplay = document.getElementById('currentDailyFact');
         const currentDailyTipDisplay = document.getElementById('currentDailyTip');
         const todaysMealsContentContainer = document.getElementById('todaysMealsContent'); 
@@ -594,7 +642,8 @@
         const selectedDateDisplay = document.getElementById('selectedDateDisplay');
         const selectedDateTrimesterDisplay = document.getElementById('selectedDateTrimester');
         const selectedDatePregnancyWeekDisplay = document.getElementById('selectedDatePregnancyWeek');
-        const selectedDateBabySizeDisplay = document.getElementById('selectedDateBabySize');
+        const selectedDateBabySizeImage = document.getElementById('selectedDateBabyImage');
+        const selectedDateBabySizeText = document.getElementById('selectedDateBabySizeText');
         const selectedDateDailyFactDisplay = document.getElementById('selectedDateDailyFact');
         const selectedDateDailyTipDisplay = document.getElementById('selectedDateDailyTip');
         const selectedDateMealsContentContainer = document.getElementById('selectedDateMealsContent'); 
@@ -731,7 +780,7 @@
                 return { planActive: false, errorMessage: "Meal data not available for this specific day in the cycle.", trimesterName: activeTrimesterDetails.name, pregnancyWeekText, focusPoints: activeTrimesterDetails.focus };
             }
             
-            const babySize = allDietData.babySizeComparisons[(pregnancyWeek -1) % allDietData.babySizeComparisons.length] || "growing beautifully!";
+            const babySizeData = allDietData.babySizeComparisons[(pregnancyWeek -1) % allDietData.babySizeComparisons.length] || {text: "growing beautifully!", image: "https://placehold.co/48x48/e2e8f0/333?text=Baby"};
             const dailyFact = allDietData.dailyFacts[(pregnancyWeek -1) % allDietData.dailyFacts.length] || "Every day brings new developments!";
             const dailyTip = allDietData.dailyTips[(pregnancyWeek-1) % allDietData.dailyTips.length] || "Stay positive and enjoy this journey!";
 
@@ -740,7 +789,8 @@
                 planActive: true,
                 trimesterName: activeTrimesterDetails.name,
                 pregnancyWeekText: pregnancyWeekText,
-                babySize: babySize,
+                babySizeText: babySizeData.text,
+                babySizeImage: babySizeData.image,
                 dailyFact: dailyFact,
                 dailyTip: dailyTip,
                 mealData: mealDataForDay,
@@ -768,7 +818,9 @@
                 
                 selectedDateTrimesterDisplay.textContent = planForSelectedDate.trimesterName;
                 selectedDatePregnancyWeekDisplay.textContent = planForSelectedDate.pregnancyWeekText;
-                selectedDateBabySizeDisplay.textContent = planForSelectedDate.babySize;
+                selectedDateBabySizeImage.src = planForSelectedDate.babySizeImage;
+                selectedDateBabySizeImage.alt = planForSelectedDate.babySizeText;
+                selectedDateBabySizeText.textContent = planForSelectedDate.babySizeText;
                 selectedDateDailyFactDisplay.textContent = planForSelectedDate.dailyFact;
                 selectedDateDailyTipDisplay.textContent = planForSelectedDate.dailyTip;
                 
@@ -822,7 +874,9 @@
 
                 currentTrimesterDisplay.textContent = todaysPlan.trimesterName;
                 currentPregnancyWeekDisplay.textContent = todaysPlan.pregnancyWeekText;
-                currentBabySizeDisplay.textContent = todaysPlan.babySize;
+                currentBabySizeImage.src = todaysPlan.babySizeImage;
+                currentBabySizeImage.alt = todaysPlan.babySizeText;
+                currentBabySizeText.textContent = todaysPlan.babySizeText;
                 currentDailyFactDisplay.textContent = todaysPlan.dailyFact;
                 currentDailyTipDisplay.textContent = todaysPlan.dailyTip;
                 
@@ -839,7 +893,8 @@
                 todaysPlanSection.style.display = 'none';
                 currentTrimesterDisplay.textContent = "N/A";
                 currentPregnancyWeekDisplay.textContent = "N/A";
-                currentBabySizeDisplay.textContent = "N/A";
+                currentBabySizeImage.style.display = 'none'; 
+                currentBabySizeText.textContent = "N/A";
                 currentDailyFactDisplay.textContent = "Please check back when the plan is active.";
                 currentDailyTipDisplay.textContent = "Consult your doctor for general advice.";
                 if(todaysMealsContentContainer) todaysMealsContentContainer.innerHTML = `<p class="text-gray-600 p-4 text-center">${todaysPlan.errorMessage || 'No daily meal plan active for today.'}</p>`; 

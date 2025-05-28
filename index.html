@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        html {
+            scroll-behavior: smooth; /* Enables smooth scrolling for the whole page */
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f7fafc; /* Tailwind gray-100 */
@@ -142,11 +145,10 @@
             </div>
         </div>
 
-        <div class="mt-10 pt-8 border-t border-gray-300">
-            <h2 class="text-2xl font-semibold text-purple-700 mb-4 text-center md:text-left">View Plan for Monika on a Specific Date</h2>
+        <div class="mt-10 pt-8 border-t border-gray-300" id="datePickerMainSection"> <h2 class="text-2xl font-semibold text-purple-700 mb-4 text-center md:text-left">View Plan for Monika on a Specific Date</h2>
             <div class="flex flex-col sm:flex-row gap-3 mb-6 items-stretch sm:items-center">
                 <input type="date" id="dateInput" class="w-full h-12 text-gray-700 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:flex-1">
-                 </div>
+            </div>
             <div class="mb-6 text-center md:text-left">
                 <button id="viewTomorrowButton" class="shortcut-button w-full sm:w-auto h-12 flex items-center justify-center">📅 View Tomorrow's Plan</button>
             </div>
@@ -519,7 +521,7 @@
 
         // Date Picker Elements
         const dateInputElement = document.getElementById('dateInput');
-        const viewTomorrowButton = document.getElementById('viewTomorrowButton'); // New button
+        const viewTomorrowButton = document.getElementById('viewTomorrowButton'); 
         const selectedDatePlanSection = document.getElementById('selectedDatePlanSection');
         const selectedDatePlanMessage = document.getElementById('selectedDatePlanMessage');
         const selectedDatePlanDetails = document.getElementById('selectedDatePlanDetails');
@@ -675,6 +677,7 @@
             const lmpConfig = { day: allDietData.lmpDay, month: allDietData.lmpMonth };
             const trimestersConfig = allDietData.trimesters;
             const planForSelectedDate = getDietPlanDetails(dateObject, lmpConfig, trimestersConfig);
+            const datePickerMainSection = document.getElementById('datePickerMainSection');
             
             selectedDatePlanSection.style.display = 'block';
 
@@ -697,6 +700,10 @@
                 selectedDatePlanMessage.textContent = planForSelectedDate.errorMessage || "No diet plan available for the selected date.";
                 selectedDatePlanMessage.style.display = 'block';
             }
+            // Scroll to the section after updating
+            if (datePickerMainSection) {
+                datePickerMainSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
 
@@ -718,13 +725,16 @@
         // --- Main Logic ---
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
+            today.setHours(0,0,0,0); 
             currentDateDisplay.textContent = formatDate(today);
             currentYearSpan.textContent = today.getFullYear();
+
+            dateInputElement.value = formatDateForInput(today);
+
 
             const lmpConfig = { day: allDietData.lmpDay, month: allDietData.lmpMonth };
             const trimestersConfig = allDietData.trimesters;
 
-            // Display Today's Plan
             const todaysPlan = getDietPlanDetails(new Date(today), lmpConfig, trimestersConfig);
 
             if (todaysPlan.planActive) {
@@ -755,11 +765,12 @@
                 dateInputElement.max = formatDateForInput(new Date(fallbackLmpYear + 1, trimestersConfig.T3.planEndMonth, trimestersConfig.T3.planEndDate));
             }
 
+            // No need to auto-display for "selected date" on load if "Today's plan" is already shown.
+            // Only trigger display when date input *changes* or "Tomorrow" button is clicked.
 
-            // Event Listener for Date Input Change (Automatic Update)
             dateInputElement.addEventListener('change', () => {
                 const selectedDateValue = dateInputElement.value;
-                if (!selectedDateValue) { // Should not happen with native date picker if a value is selected
+                if (!selectedDateValue) { 
                     selectedDatePlanMessage.textContent = "Please select a date.";
                     selectedDatePlanMessage.style.display = 'block';
                     selectedDatePlanDetails.style.display = 'none';
@@ -773,15 +784,12 @@
                 displayPlanForSelectedDate(selectedDateObj);
             });
 
-            // Event Listener for "View Tomorrow's Plan" Button
             viewTomorrowButton.addEventListener('click', () => {
-                const tomorrow = new Date(today); // Start with today
-                tomorrow.setDate(today.getDate() + 1); // Increment to tomorrow
+                const tomorrow = new Date(); 
+                tomorrow.setDate(tomorrow.getDate() + 1); 
                 tomorrow.setHours(0,0,0,0); 
                 
-                // Set the date picker to tomorrow's date
                 dateInputElement.value = formatDateForInput(tomorrow);
-                // Display the plan for tomorrow
                 displayPlanForSelectedDate(tomorrow);
             });
 
